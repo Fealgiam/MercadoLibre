@@ -1,0 +1,16 @@
+/*
+	================================================================================
+	This file contains the all configurations for this project
+	================================================================================
+
+	Included from "${rootProject.projectDir}/build.gradle
+	================================================================================
+ */
+
+apply plugin: "java"
+
+apply plugin: "jacoco"
+apply plugin: "org.owasp.dependencycheck"
+
+apply plugin: "org.springframework.boot"
+apply plugin: "io.spring.dependency-management"

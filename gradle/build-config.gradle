@@ -1,0 +1,25 @@
+/*
+	================================================================================
+	This file contains the all configurations for all plugins apply in this project
+	================================================================================
+
+	Included from "${rootProject.projectDir}/build.gradle
+	================================================================================
+ */
+
+/*--------------------------------------------------------------------------------------------------------------------*/
+group = project.property("app.group")
+version = project.property("app.version")
+description = project.property("app.description")
+/*--------------------------------------------------------------------------------------------------------------------*/
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+/*--------------------------------------------------------------------------------------------------------------------*/
+dependencyCheck {
+    autoUpdate = false
+    format = 'ALL'
+    nvd.apiKey = project.property("owasp.nvd.key")
+    //check.dependsOn(dependencyCheckAnalyze)
+}

@@ -1,0 +1,41 @@
+# Actuator configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+# Spring configurations
+spring:
+  application:
+    name: coupon
+
+# Application configuration
+application:
+  conversion-value: 100
+
+# Services configurations
+services:
+  mercado-libre:
+    url: https://api.mercadolibre.com
+    paths:
+      fetch-product: /items/{id}
+      fetch-products: /items
+      fetch-country: /country/{id}
+      fetch-countries: /sites
+
+# Resilience4j CircuitBreaker
+resilience4j.circuitbreaker:
+  instances:
+    mercadoLibreService:
+      registerHealthIndicator: true
+      slidingWindowSize: 10
+      failureRateThreshold: 50
+      waitDurationInOpenState: 10000
+      permittedNumberOfCallsInHalfOpenState: 3
+      slidingWindowType: COUNT_BASED
+      minimumNumberOfCalls: 5
+      automaticTransitionFromOpenToHalfOpenEnabled: true

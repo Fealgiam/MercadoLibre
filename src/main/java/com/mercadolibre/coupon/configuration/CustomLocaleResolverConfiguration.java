@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Locale;
 
 @Configuration
-public class CustomLocaleResolver extends AcceptHeaderLocaleResolver {
+public class CustomLocaleResolverConfiguration extends AcceptHeaderLocaleResolver {
 
     private static final String DEFAULT_LOCALE = "es";
 
@@ -37,7 +37,7 @@ public class CustomLocaleResolver extends AcceptHeaderLocaleResolver {
 
     @Bean
     public LocaleResolver localeResolver() {
-        return new CustomLocaleResolver();
+        return new CustomLocaleResolverConfiguration();
     }
 
 }

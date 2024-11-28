@@ -15,6 +15,7 @@ public class ProductMapper {
 
     private final CountryMapper countryMapper;
 
+
     public Product mapper(final String productId) {
         return Optional
                 .ofNullable(productId)

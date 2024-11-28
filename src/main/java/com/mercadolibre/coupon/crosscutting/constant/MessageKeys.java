@@ -1,4 +1,4 @@
-package com.mercadolibre.coupon.crosscutting.constants;
+package com.mercadolibre.coupon.crosscutting.constant;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -16,6 +16,7 @@ public class MessageKeys {
     /**
      * Messages exceptions
      */
+    public static final String MSJ_EX_CODE_BUSINESS = "message.exception.code.business";
     public static final String MSJ_EX_CODE_TECHNICAL = "message.exception.code.technical";
 
     /**
@@ -26,5 +27,19 @@ public class MessageKeys {
 
     public static final String MSJ_RQ_VAL_ITEMS_NULL = "message.request.validation.items.null";
     public static final String MSJ_RQ_VAL_ITEMS_EMPTY = "message.request.validation.items.empty";
+
+    public static final String MSJ_RQ_VAL_HEADER_VERSION = "message.request.validation.header.version";
+    public static final String MSJ_RQ_VAL_HEADER_LANGUAGE = "message.request.validation.header.language";
+
+    /**
+     * Messages context error
+     */
+    public static final String MSJ_CONTEXT_NULL = "message.context.null";
+    public static final String MSJ_CONTEXT_CAST = "message.context.cast";
+
+    /**
+     * Messages business validation
+     */
+    public static final String MSJ_BUSINESS_COUPON_INAPPLICABLE = "message.business.coupon.inapplicable";
 
 }

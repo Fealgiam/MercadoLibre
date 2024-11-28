@@ -1,7 +1,9 @@
 package com.mercadolibre.coupon.infrastructure.model.entrypoint;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,12 +18,16 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ErrorResponse implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1740141412137666247L;
 
     private Integer code;
+
+    @JsonProperty("custom_code")
+    private String customCode;
 
     private String status;
 

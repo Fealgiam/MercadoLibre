@@ -4,10 +4,12 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class MessageContextEnum<K extends Enum<K>, V> implements MessageContext<K, V> {
+import static com.mercadolibre.coupon.crosscutting.constant.MessageKeys.MSJ_CONTEXT_CAST;
+import static com.mercadolibre.coupon.crosscutting.constant.MessageKeys.MSJ_CONTEXT_NULL;
+import static com.mercadolibre.coupon.crosscutting.utility.MessageUtility.getMessage;
+import static java.lang.String.format;
 
-    private static final String ERR_MSJ = "Item %s not found in message context.";
-    private static final String ERR_MSJ_CAST = "Key item class %s is not valid: Expected %s - Found %s.";
+public class MessageContextEnum<K extends Enum<K>, V> implements MessageContext<K, V> {
 
     private Map<K, V> context;
 
@@ -25,11 +27,11 @@ public class MessageContextEnum<K extends Enum<K>, V> implements MessageContext<
         V item = this.existItem(key) ? context.get(key) : null;
 
         if (Objects.isNull(item)) {
-            throw new IllegalArgumentException(String.format(ERR_MSJ, key));
+            throw new IllegalArgumentException(format(getMessage(MSJ_CONTEXT_NULL), key));
         }
 
         if (!targetType.isInstance(item)) {
-            throw new IllegalArgumentException(String.format(ERR_MSJ_CAST, key, targetType, item.getClass()));
+            throw new IllegalArgumentException(format(getMessage(MSJ_CONTEXT_CAST), key, targetType, item.getClass()));
         }
 
         return targetType.cast(item);

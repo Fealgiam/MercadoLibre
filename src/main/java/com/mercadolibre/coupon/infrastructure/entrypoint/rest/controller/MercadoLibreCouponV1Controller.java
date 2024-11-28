@@ -1,10 +1,11 @@
 package com.mercadolibre.coupon.infrastructure.entrypoint.rest.controller;
 
 import com.mercadolibre.coupon.application.inbound.CouponService;
-import com.mercadolibre.coupon.application.inbound.mercadolibre.CouponIterativeService;
 import com.mercadolibre.coupon.crosscutting.utility.PropagationExceptionUtility;
+import com.mercadolibre.coupon.domain.model.Coupon;
 import com.mercadolibre.coupon.infrastructure.entrypoint.rest.MercadoLibreCouponController;
 import com.mercadolibre.coupon.infrastructure.mapper.CouponMapper;
+import com.mercadolibre.coupon.infrastructure.mapper.CouponV1RsMapper;
 import com.mercadolibre.coupon.infrastructure.model.entrypoint.DataResponse;
 import com.mercadolibre.coupon.infrastructure.model.entrypoint.coupon.v1.CouponV1Rq;
 import com.mercadolibre.coupon.infrastructure.model.entrypoint.coupon.v1.CouponV1Rs;
@@ -18,9 +19,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.mercadolibre.coupon.crosscutting.constants.MessageKeys.MSJ_GEN_FOR_SUM_ERROR;
-import static com.mercadolibre.coupon.crosscutting.constants.ResourceEndpoints.COUPON_PATH;
-import static com.mercadolibre.coupon.crosscutting.constants.ResourceEndpoints.X_API_VERSION_V1;
+import static com.mercadolibre.coupon.crosscutting.constant.MessageKeys.MSJ_GEN_FOR_SUM_ERROR;
+import static com.mercadolibre.coupon.crosscutting.constant.ResourceEndpoints.COUPON_PATH;
+import static com.mercadolibre.coupon.crosscutting.constant.ResourceEndpoints.X_API_VERSION_V1;
 import static com.mercadolibre.coupon.crosscutting.utility.MessageUtility.getMessage;
 import static java.lang.String.format;
 
@@ -40,6 +41,7 @@ public class MercadoLibreCouponV1Controller implements MercadoLibreCouponControl
 
     // Mappers
     private final CouponMapper couponMapper;
+    private final CouponV1RsMapper couponV1RsMapper;
 
     // Services
     private final CouponService couponIterativeService;
@@ -47,10 +49,10 @@ public class MercadoLibreCouponV1Controller implements MercadoLibreCouponControl
 
     @Override
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<DataResponse<CouponV1Rs>> calculateProductsCoupon(@Valid @RequestBody CouponV1Rq coupons) {
+    public ResponseEntity<DataResponse<CouponV1Rs>> calculateBestOfferCoupon(@Valid @RequestBody CouponV1Rq coupons) {
         try {
-            couponIterativeService.calculateProductsCoupon(couponMapper.mapper(coupons));
-            return this.buildResponse(CouponV1Rs.builder().build());
+            Coupon couponRedeemable = couponIterativeService.calculateProductsCoupon(couponMapper.mapper(coupons));
+            return this.buildResponse(couponV1RsMapper.mapper(couponRedeemable));
         } catch (Exception ex) {
             log.error(format(getMessage(MSJ_GEN_FOR_SUM_ERROR), CLASS_NAME, "calculateProductsCoupon"));
             throw PropagationExceptionUtility.generateMercadoLibreException(ex);

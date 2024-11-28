@@ -1,6 +1,6 @@
-package com.mercadolibre.coupon.application.inbound.mercadolibre.steps;
+package com.mercadolibre.coupon.application.inbound.mercadolibre.step;
 
-import com.mercadolibre.coupon.application.outbound.ProductService;
+import com.mercadolibre.coupon.crosscutting.exception.business.BusinessException;
 import com.mercadolibre.coupon.crosscutting.utility.PropagationExceptionUtility;
 import com.mercadolibre.coupon.domain.context.MessageContext;
 import com.mercadolibre.coupon.domain.context.MessageContextCoupon;
@@ -19,7 +19,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 
-import static com.mercadolibre.coupon.crosscutting.constants.MessageKeys.MSJ_GEN_FOR_SUM_ERROR;
+import static com.mercadolibre.coupon.crosscutting.constant.MessageKeys.MSJ_BUSINESS_COUPON_INAPPLICABLE;
+import static com.mercadolibre.coupon.crosscutting.constant.MessageKeys.MSJ_GEN_FOR_SUM_ERROR;
 import static com.mercadolibre.coupon.crosscutting.utility.MessageUtility.getMessage;
 import static com.mercadolibre.coupon.domain.context.MessageContextCoupon.COUPON;
 import static com.mercadolibre.coupon.domain.context.MessageContextCoupon.PRODUCTS;
@@ -29,7 +30,7 @@ import static java.lang.String.format;
 @Log4j2
 @Component
 @RequiredArgsConstructor
-public class CalculateProductsByCoupon implements UnaryOperator<MessageContext<Enum<MessageContextCoupon>, Object>> {
+public class CalculateProductsByCoupon implements UnaryOperator<MessageContext<MessageContextCoupon, Object>> {
 
     private static final String CLASS_NAME = CalculateProductsByCoupon.class.getSimpleName();
 
@@ -38,25 +39,35 @@ public class CalculateProductsByCoupon implements UnaryOperator<MessageContext<E
 
 
     @Override
-    public MessageContext<Enum<MessageContextCoupon>, Object> apply(
-            final MessageContext<Enum<MessageContextCoupon>, Object> context) {
+    public MessageContext<MessageContextCoupon, Object>  apply(
+            final MessageContext<MessageContextCoupon, Object> context) {
         try {
             // load properties
             final var coupon = context.getItem(COUPON, Coupon.class);
 
             final var amountCoupon = coupon.getAmount();
-            final Map<String, Coupon> couponMap = new HashMap<>();
+            final var bestOfferByCountry = new HashMap<String, Coupon>();
+            @SuppressWarnings("unchecked")
             final Map<String, Set<Product>> productsByCountry = context.getItem(PRODUCTS, Map.class);
 
-            //
+            // Calculate best offer for the coupon
             productsByCountry.entrySet().forEach(products -> {
                 final var key = products.getKey();
                 final var productsList = new ArrayList<>(products.getValue());
-                couponMap.put(key, this.maximizeCoupon(productsList, amountCoupon));
+                final var couponRedeemed = this.maximizeCoupon(productsList, amountCoupon);
+
+                if (couponRedeemed.getAmountRedeemable() > 0d) {
+                    bestOfferByCountry.put(key, couponRedeemed);
+                }
             });
 
+            // Evaluate if coupon is redeemed
+            if (bestOfferByCountry.isEmpty()) {
+                throw new BusinessException(getMessage(MSJ_BUSINESS_COUPON_INAPPLICABLE));
+            }
 
-            context.addItem(PRODUCTS_BY_COUPON, couponMap);
+            // Add context
+            context.addItem(PRODUCTS_BY_COUPON, bestOfferByCountry);
 
             return context;
         } catch (Exception ex) {

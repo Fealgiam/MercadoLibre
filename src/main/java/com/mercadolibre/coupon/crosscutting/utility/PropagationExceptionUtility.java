@@ -1,7 +1,7 @@
 package com.mercadolibre.coupon.crosscutting.utility;
 
 import com.mercadolibre.coupon.crosscutting.exception.MercadoLibreException;
-import com.mercadolibre.coupon.crosscutting.exception.technicalexception.TechnicalException;
+import com.mercadolibre.coupon.crosscutting.exception.technical.TechnicalException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +9,12 @@ import lombok.NoArgsConstructor;
 public class PropagationExceptionUtility {
 
     public static MercadoLibreException generateMercadoLibreException(Exception ex) {
+        return (ex instanceof MercadoLibreException exception)
+                ? exception
+                : new TechnicalException(ex.getMessage(), ex);
+    }
+
+    public static MercadoLibreException generateMercadoLibreException(Throwable ex) {
         return (ex instanceof MercadoLibreException exception)
                 ? exception
                 : new TechnicalException(ex.getMessage(), ex);

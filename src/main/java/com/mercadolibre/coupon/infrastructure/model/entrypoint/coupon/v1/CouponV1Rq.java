@@ -15,10 +15,10 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Set;
 
-import static com.mercadolibre.coupon.crosscutting.constants.MessageKeys.MSJ_RQ_VAL_AMOUNT_NULL;
-import static com.mercadolibre.coupon.crosscutting.constants.MessageKeys.MSJ_RQ_VAL_AMOUNT_POSITIVE;
-import static com.mercadolibre.coupon.crosscutting.constants.MessageKeys.MSJ_RQ_VAL_ITEMS_EMPTY;
-import static com.mercadolibre.coupon.crosscutting.constants.MessageKeys.MSJ_RQ_VAL_ITEMS_NULL;
+import static com.mercadolibre.coupon.crosscutting.constant.MessageKeys.MSJ_RQ_VAL_AMOUNT_NULL;
+import static com.mercadolibre.coupon.crosscutting.constant.MessageKeys.MSJ_RQ_VAL_AMOUNT_POSITIVE;
+import static com.mercadolibre.coupon.crosscutting.constant.MessageKeys.MSJ_RQ_VAL_ITEMS_EMPTY;
+import static com.mercadolibre.coupon.crosscutting.constant.MessageKeys.MSJ_RQ_VAL_ITEMS_NULL;
 
 @Data
 @Builder

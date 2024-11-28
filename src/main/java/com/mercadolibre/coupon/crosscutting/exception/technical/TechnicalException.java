@@ -1,4 +1,4 @@
-package com.mercadolibre.coupon.crosscutting.exception.technicalexception;
+package com.mercadolibre.coupon.crosscutting.exception.technical;
 
 import com.mercadolibre.coupon.crosscutting.exception.MercadoLibreException;
 import com.mercadolibre.coupon.crosscutting.utility.MessageUtility;
@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 import java.io.Serial;
 
-import static com.mercadolibre.coupon.crosscutting.constants.MessageKeys.MSJ_EX_CODE_TECHNICAL;
+import static com.mercadolibre.coupon.crosscutting.constant.MessageKeys.MSJ_EX_CODE_TECHNICAL;
 
 public class TechnicalException extends MercadoLibreException {
 

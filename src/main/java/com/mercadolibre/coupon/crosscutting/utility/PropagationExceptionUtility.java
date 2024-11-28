@@ -8,13 +8,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PropagationExceptionUtility {
 
-    public static MercadoLibreException generateMercadoLibreException(Exception ex) {
+    public static MercadoLibreException generateMercadoLibreException(final Exception ex) {
         return (ex instanceof MercadoLibreException exception)
                 ? exception
                 : new TechnicalException(ex.getMessage(), ex);
     }
 
-    public static MercadoLibreException generateMercadoLibreException(Throwable ex) {
+    public static MercadoLibreException generateMercadoLibreException(final Throwable ex) {
         return (ex instanceof MercadoLibreException exception)
                 ? exception
                 : new TechnicalException(ex.getMessage(), ex);

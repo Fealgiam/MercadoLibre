@@ -24,12 +24,15 @@ import static com.mercadolibre.coupon.crosscutting.utility.MessageUtility.getMes
 public class WebConfiguration implements WebMvcConfigurer, HandlerInterceptor {
 
     @Override
-    public void addInterceptors(InterceptorRegistry registry) {
+    public void addInterceptors(final InterceptorRegistry registry) {
         registry.addInterceptor(this);
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    public boolean preHandle(final HttpServletRequest request,
+                             final HttpServletResponse response,
+                             final Object handler) {
+
         if (Objects.isNull(request.getHeader(X_API_VERSION))) {
             throw new MercadoLibreException(
                     getMessage(MSJ_EX_CODE_TECHNICAL), getMessage(MSJ_RQ_VAL_HEADER_VERSION), HttpStatus.BAD_REQUEST);

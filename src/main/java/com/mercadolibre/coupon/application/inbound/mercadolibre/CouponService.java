@@ -43,7 +43,7 @@ public class CouponService implements com.mercadolibre.coupon.application.inboun
 
     // Custom Methods
     @Override
-    public Coupon calculateProductsCoupon(final Coupon coupon) {
+    public Coupon calculateBestOfferCoupon(final Coupon coupon) {
         try {
             return fetchProducts
                     .andThen(calculateProductsByCoupon)
@@ -52,7 +52,7 @@ public class CouponService implements com.mercadolibre.coupon.application.inboun
                     .apply(this.initialPipelineData(coupon))
                     .getItem(COUPON, Coupon.class);
         } catch (Exception ex) {
-            log.error(format(getMessage(MSJ_GEN_FOR_SUM_ERROR), CLASS_NAME, "calculateProductsCoupon"));
+            log.error(format(getMessage(MSJ_GEN_FOR_SUM_ERROR), CLASS_NAME, "calculateBestOfferCoupon"));
             throw PropagationExceptionUtility.generateMercadoLibreException(ex);
         }
     }

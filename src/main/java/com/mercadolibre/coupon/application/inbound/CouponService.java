@@ -4,6 +4,6 @@ import com.mercadolibre.coupon.domain.model.Coupon;
 
 public interface CouponService {
 
-    Coupon calculateProductsCoupon(final Coupon coupon);
+    Coupon calculateBestOfferCoupon(final Coupon coupon);
 
 }

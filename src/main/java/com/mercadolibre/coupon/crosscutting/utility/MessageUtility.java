@@ -22,7 +22,7 @@ public class MessageUtility {
         reloadableResourceBundleMessageSource.setDefaultEncoding(StandardCharsets.UTF_8.name());
     }
 
-    public static String getMessage(String key, String... params) {
+    public static String getMessage(final String key, final String... params) {
         return reloadableResourceBundleMessageSource.getMessage(key, params, LocaleContextHolder.getLocale());
     }
 

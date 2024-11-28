@@ -22,7 +22,7 @@ public class CustomLocaleResolverConfiguration extends AcceptHeaderLocaleResolve
 
 
     @Override
-    public Locale resolveLocale(HttpServletRequest request) {
+    public Locale resolveLocale(final HttpServletRequest request) {
         Locale localeResult;
 
         if (StringUtils.isEmpty(request.getHeader(HttpHeaders.ACCEPT_LANGUAGE))) {

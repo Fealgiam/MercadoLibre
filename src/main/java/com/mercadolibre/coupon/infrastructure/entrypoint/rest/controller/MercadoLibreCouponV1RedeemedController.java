@@ -3,7 +3,7 @@ package com.mercadolibre.coupon.infrastructure.entrypoint.rest.controller;
 import com.mercadolibre.coupon.application.inbound.CouponService;
 import com.mercadolibre.coupon.crosscutting.utility.PropagationExceptionUtility;
 import com.mercadolibre.coupon.domain.model.Coupon;
-import com.mercadolibre.coupon.infrastructure.entrypoint.rest.MercadoLibreCouponController;
+import com.mercadolibre.coupon.infrastructure.entrypoint.rest.MercadoLibreCouponRedeemedController;
 import com.mercadolibre.coupon.infrastructure.mapper.CouponMapper;
 import com.mercadolibre.coupon.infrastructure.mapper.CouponV1RsMapper;
 import com.mercadolibre.coupon.infrastructure.model.entrypoint.DataResponse;
@@ -35,9 +35,10 @@ import static java.lang.String.format;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = COUPON_PATH, headers = {X_API_VERSION_V1})
-public class MercadoLibreCouponV1Controller implements MercadoLibreCouponController<CouponV1Rq, CouponV1Rs> {
+public class MercadoLibreCouponV1RedeemedController
+        implements MercadoLibreCouponRedeemedController<CouponV1Rq, CouponV1Rs> {
 
-    private static final String CLASS_NAME = MercadoLibreCouponV1Controller.class.getSimpleName();
+    private static final String CLASS_NAME = MercadoLibreCouponV1RedeemedController.class.getSimpleName();
 
     // Mappers
     private final CouponMapper couponMapper;
@@ -51,10 +52,10 @@ public class MercadoLibreCouponV1Controller implements MercadoLibreCouponControl
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DataResponse<CouponV1Rs>> calculateBestOfferCoupon(@Valid @RequestBody CouponV1Rq coupons) {
         try {
-            Coupon couponRedeemable = couponIterativeService.calculateProductsCoupon(couponMapper.mapper(coupons));
+            Coupon couponRedeemable = couponIterativeService.calculateBestOfferCoupon(couponMapper.mapper(coupons));
             return this.buildResponse(couponV1RsMapper.mapper(couponRedeemable));
         } catch (Exception ex) {
-            log.error(format(getMessage(MSJ_GEN_FOR_SUM_ERROR), CLASS_NAME, "calculateProductsCoupon"));
+            log.error(format(getMessage(MSJ_GEN_FOR_SUM_ERROR), CLASS_NAME, "calculateBestOfferCoupon"));
             throw PropagationExceptionUtility.generateMercadoLibreException(ex);
         }
     }

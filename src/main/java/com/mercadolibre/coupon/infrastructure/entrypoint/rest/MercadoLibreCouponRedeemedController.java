@@ -10,7 +10,7 @@ import static com.mercadolibre.coupon.crosscutting.constant.ResourceEndpoints.CO
 import static com.mercadolibre.coupon.crosscutting.constant.ResourceEndpoints.X_API_VERSION;
 
 @RequestMapping(path = COUPON_PATH)
-public interface MercadoLibreCouponController<I extends CouponRqRs, O extends CouponRqRs> {
+public interface MercadoLibreCouponRedeemedController<I extends CouponRqRs, O extends CouponRqRs> {
 
     default ResponseEntity<DataResponse<O>> buildResponse(O response) {
         var responseHeaders = new HttpHeaders();

@@ -1,0 +1,40 @@
+buildscript {
+
+	ext {
+		owaspDependencyCheckVersion = project.property("dependency.owasp-dependency-check")
+
+		springBootVersion = project.property("dependency.spring-boot")
+		springCloudVersion = project.property("dependency.spring-cloud")
+		springDependencyManagementVersion = project.property("dependency.spring-dependency-management")
+	}
+
+	repositories {
+		mavenCentral()
+
+		[
+			"https://plugins.gradle.org/m2/",
+			"https://repo.spring.io/milestone"
+		].each { repo ->
+			maven {
+				url repo
+				metadataSources {
+					mavenPom()
+					artifact()
+				}
+			}
+		}
+	}
+
+	dependencies {
+		classpath "io.spring.gradle:dependency-management-plugin:${springDependencyManagementVersion}"
+		classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+		classpath "org.owasp:dependency-check-gradle:${owaspDependencyCheckVersion}"
+	}
+
+}
+
+def gradlePath = "${rootProject.projectDir}${project.property("gradle.path")}"
+apply from: "${gradlePath}/build-plugin.gradle"
+apply from: "${gradlePath}/build-config.gradle"
+apply from: "${gradlePath}/build-dependencies.gradle"
+apply from: "${gradlePath}/build-jacoco.gradle"

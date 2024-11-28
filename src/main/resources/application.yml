@@ -1,0 +1,97 @@
+# Server configurations
+server:
+  servlet:
+    context-path: /mercado-libre
+
+# Login configuration
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    org.hibernate: INFO
+    com.mercadolibre.coupon: DEBUG
+
+# Actuator configuration
+management:
+  endpoints:
+    caches:
+      enabled: true
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+
+# Spring configurations
+spring:
+  application:
+    name: coupon
+  datasource:
+    url: jdbc:h2:mem:mercadoLibreTest
+    driverClassName: org.h2.Driver
+    username: mercadoLibre
+    password: mercadoLibrePassword123
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 25
+          order_inserts: true
+          order_updates: true
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/schema.sql
+
+# Application configuration
+application:
+  conversion-value: 100
+
+# Services configurations
+services:
+  mercado-libre:
+    url: https://api.mercadolibre.com
+    paths:
+      fetch-product: /items/{id}
+      fetch-products: /items
+      fetch-country: /country/{id}
+      fetch-countries: /sites
+
+# Resilience configuration
+resilience4j:
+  circuitbreaker:
+    instances:
+      feignCountryClient:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 4
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowType: COUNT_BASED
+        maxWaitDurationInHalfOpenState: 3m
+      feignProductClient:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 4
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowType: COUNT_BASED
+        maxWaitDurationInHalfOpenState: 3m
+      repositoryCouponClient:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 4
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowType: COUNT_BASED
+        maxWaitDurationInHalfOpenState: 3m

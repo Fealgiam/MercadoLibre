@@ -52,7 +52,12 @@ spring:
 
 # Application configuration
 application:
+  default-limit: 5
   conversion-value: 100
+
+cron-task:
+  cache:
+    api-call-refresh: 0 */10 * * * ?
 
 # Services configurations
 services:

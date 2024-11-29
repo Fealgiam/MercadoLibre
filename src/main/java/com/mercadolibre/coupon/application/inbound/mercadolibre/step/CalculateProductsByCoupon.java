@@ -3,7 +3,7 @@ package com.mercadolibre.coupon.application.inbound.mercadolibre.step;
 import com.mercadolibre.coupon.crosscutting.exception.business.BusinessException;
 import com.mercadolibre.coupon.crosscutting.utility.PropagationExceptionUtility;
 import com.mercadolibre.coupon.domain.context.MessageContext;
-import com.mercadolibre.coupon.domain.context.MessageContextCoupon;
+import com.mercadolibre.coupon.domain.context.MessageContextMercadoLibre;
 import com.mercadolibre.coupon.domain.model.Coupon;
 import com.mercadolibre.coupon.domain.model.Product;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,15 +23,15 @@ import java.util.function.UnaryOperator;
 import static com.mercadolibre.coupon.crosscutting.constant.MessageKeys.MSJ_BUSINESS_COUPON_INAPPLICABLE;
 import static com.mercadolibre.coupon.crosscutting.constant.MessageKeys.MSJ_GEN_FOR_SUM_ERROR;
 import static com.mercadolibre.coupon.crosscutting.utility.MessageUtility.getMessage;
-import static com.mercadolibre.coupon.domain.context.MessageContextCoupon.COUPON;
-import static com.mercadolibre.coupon.domain.context.MessageContextCoupon.PRODUCTS;
-import static com.mercadolibre.coupon.domain.context.MessageContextCoupon.PRODUCTS_BY_COUPON;
+import static com.mercadolibre.coupon.domain.context.MessageContextMercadoLibre.COUPON;
+import static com.mercadolibre.coupon.domain.context.MessageContextMercadoLibre.PRODUCTS;
+import static com.mercadolibre.coupon.domain.context.MessageContextMercadoLibre.PRODUCTS_BY_COUPON;
 import static java.lang.String.format;
 
 @Log4j2
 @Component
 @RequiredArgsConstructor
-public class CalculateProductsByCoupon implements UnaryOperator<MessageContext<MessageContextCoupon, Object>> {
+public class CalculateProductsByCoupon implements UnaryOperator<MessageContext<MessageContextMercadoLibre, Object>> {
 
     private static final String CLASS_NAME = CalculateProductsByCoupon.class.getSimpleName();
 
@@ -39,8 +40,8 @@ public class CalculateProductsByCoupon implements UnaryOperator<MessageContext<M
 
 
     @Override
-    public MessageContext<MessageContextCoupon, Object>  apply(
-            final MessageContext<MessageContextCoupon, Object> context) {
+    public MessageContext<MessageContextMercadoLibre, Object> apply(
+            final MessageContext<MessageContextMercadoLibre, Object> context) {
         try {
             // load properties
             final var coupon = context.getItem(COUPON, Coupon.class);
@@ -54,7 +55,7 @@ public class CalculateProductsByCoupon implements UnaryOperator<MessageContext<M
             productsByCountry.entrySet().forEach(products -> {
                 final var key = products.getKey();
                 final var productsList = new ArrayList<>(products.getValue());
-                final var couponRedeemed = this.maximizeCoupon(productsList, amountCoupon);
+                final var couponRedeemed = this.maximizeCoupon2(productsList, amountCoupon);
 
                 if (couponRedeemed.getAmountRedeemable() > 0d) {
                     bestOfferByCountry.put(key, couponRedeemed);
@@ -109,6 +110,94 @@ public class CalculateProductsByCoupon implements UnaryOperator<MessageContext<M
                 .products(new HashSet<>(products))
                 .productsRedeemable(includedProducts)
                 .build();
+    }
+
+    public Coupon maximizeCoupon1(final List<Product> products, final double amountValue) {
+        int intCouponValue = (int) Math.round(amountValue * conversionValue);
+        int[] prices = products.stream().mapToInt(p -> (int) Math.round(p.getPrice() * conversionValue)).toArray();
+        int n = prices.length;
+        int[] dp = new int[intCouponValue + 1];
+        int[] productIndexes = new int[intCouponValue + 1];
+        Arrays.fill(productIndexes, -1);
+        for (int i = 0; i < n; i++) {
+            for (int j = intCouponValue; j >= prices[i]; j--) {
+                if (dp[j] < dp[j - prices[i]] + prices[i]) {
+                    dp[j] = dp[j - prices[i]] + prices[i];
+                    productIndexes[j] = i;
+                }
+            }
+        }
+        Set<Product> includedProducts = new HashSet<>();
+        for (int j = intCouponValue; j > 0 && productIndexes[j] != -1; j -= prices[productIndexes[j]]) {
+            includedProducts.add(products.get(productIndexes[j]));
+        }
+        return Coupon
+                .builder()
+                .amount(amountValue)
+                .amountRedeemable((double) dp[intCouponValue] / conversionValue)
+                .products(new HashSet<>(products))
+                .productsRedeemable(includedProducts)
+                .build();
+    }
+
+    public Coupon maximizeCoupon2(final List<Product> products, final double amountValue) {
+        int intCouponValue = (int) Math.round(amountValue * conversionValue);
+        int[] prices = new int[products.size()];
+        for (int i = 0; i < products.size(); i++) {
+            prices[i] = (int) Math.round(products.get(i).getPrice() * conversionValue);
+        }
+        int[] dp = new int[intCouponValue + 1];
+        List<Integer>[] productIndexes = new ArrayList[intCouponValue + 1];
+        for (int i = 0; i <= intCouponValue; i++) {
+            productIndexes[i] = new ArrayList<>();
+        }
+        for (int i = 0; i < prices.length; i++) {
+            for (int j = intCouponValue; j >= prices[i]; j--) {
+                if (dp[j] < dp[j - prices[i]] + prices[i]) {
+                    dp[j] = dp[j - prices[i]] + prices[i];
+                    productIndexes[j] = new ArrayList<>(productIndexes[j - prices[i]]);
+                    productIndexes[j].add(i);
+                }
+            }
+        }
+        Set<Product> includedProducts = new HashSet<>();
+        for (int index : productIndexes[intCouponValue]) {
+            includedProducts.add(products.get(index));
+        }
+        return Coupon
+                .builder()
+                .amount(amountValue)
+                .amountRedeemable((double) dp[intCouponValue] / conversionValue)
+                .products(new HashSet<>(products))
+                .productsRedeemable(includedProducts)
+                .build();
+    }
+
+    public Coupon maximizeCoupon3(final List<Product> products, final double amountValue) {
+        int intCouponValue = (int) Math.round(amountValue * conversionValue);
+        int[] prices = new int[products.size()];
+        for (int i = 0; i < products.size(); i++) {
+            prices[i] = (int) Math.round(products.get(i).getPrice() * conversionValue);
+        }
+        int[] dp = new int[intCouponValue + 1];
+        List<Integer>[] productIndexes = new ArrayList[intCouponValue + 1];
+        for (int i = 0; i <= intCouponValue; i++) {
+            productIndexes[i] = new ArrayList<>();
+        }
+        for (int i = 0; i < prices.length; i++) {
+            for (int j = intCouponValue; j >= prices[i]; j--) {
+                if (dp[j] < dp[j - prices[i]] + prices[i]) {
+                    dp[j] = dp[j - prices[i]] + prices[i];
+                    productIndexes[j] = new ArrayList<>(productIndexes[j - prices[i]]);
+                    productIndexes[j].add(i);
+                }
+            }
+        }
+        Set<Product> includedProducts = new HashSet<>();
+        for (int index : productIndexes[intCouponValue]) {
+            includedProducts.add(products.get(index));
+        }
+        return Coupon.builder().amount(amountValue).amountRedeemable((double)dp[intCouponValue] / conversionValue).products(new HashSet<>(products)).productsRedeemable(includedProducts).build();
     }
 
 }

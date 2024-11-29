@@ -2,7 +2,7 @@ package com.mercadolibre.coupon.application.inbound.mercadolibre.step;
 
 import com.mercadolibre.coupon.crosscutting.utility.PropagationExceptionUtility;
 import com.mercadolibre.coupon.domain.context.MessageContext;
-import com.mercadolibre.coupon.domain.context.MessageContextCoupon;
+import com.mercadolibre.coupon.domain.context.MessageContextMercadoLibre;
 import com.mercadolibre.coupon.domain.model.Coupon;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -14,21 +14,21 @@ import java.util.function.UnaryOperator;
 
 import static com.mercadolibre.coupon.crosscutting.constant.MessageKeys.MSJ_GEN_FOR_SUM_ERROR;
 import static com.mercadolibre.coupon.crosscutting.utility.MessageUtility.getMessage;
-import static com.mercadolibre.coupon.domain.context.MessageContextCoupon.COUPON;
-import static com.mercadolibre.coupon.domain.context.MessageContextCoupon.PRODUCTS_BY_COUPON;
+import static com.mercadolibre.coupon.domain.context.MessageContextMercadoLibre.COUPON;
+import static com.mercadolibre.coupon.domain.context.MessageContextMercadoLibre.PRODUCTS_BY_COUPON;
 import static java.lang.String.format;
 
 @Log4j2
 @Component
 @RequiredArgsConstructor
-public class SelectBestOfferCoupon implements UnaryOperator<MessageContext<MessageContextCoupon, Object> > {
+public class SelectBestOfferCoupon implements UnaryOperator<MessageContext<MessageContextMercadoLibre, Object> > {
 
     private static final String CLASS_NAME = SelectBestOfferCoupon.class.getSimpleName();
 
 
     @Override
-    public MessageContext<MessageContextCoupon, Object>  apply(
-            final MessageContext<MessageContextCoupon, Object>  context) {
+    public MessageContext<MessageContextMercadoLibre, Object>  apply(
+            final MessageContext<MessageContextMercadoLibre, Object>  context) {
         try {
             // load properties
             @SuppressWarnings("unchecked")

@@ -22,6 +22,8 @@ public class MessageKeys {
     /**
      * Messages request validation
      */
+    public static final String MSJ_RQ_VAL_COUNTRY = "message.request.validation.country";
+
     public static final String MSJ_RQ_VAL_AMOUNT_NULL = "message.request.validation.amount.null";
     public static final String MSJ_RQ_VAL_AMOUNT_POSITIVE = "message.request.validation.amount.positive";
 
@@ -30,6 +32,7 @@ public class MessageKeys {
 
     public static final String MSJ_RQ_VAL_HEADER_VERSION = "message.request.validation.header.version";
     public static final String MSJ_RQ_VAL_HEADER_LANGUAGE = "message.request.validation.header.language";
+    public static final String MSJ_RQ_VAL_HEADER_CONTENT_TYPE = "message.request.validation.header.mediaType";
 
     /**
      * Messages context error

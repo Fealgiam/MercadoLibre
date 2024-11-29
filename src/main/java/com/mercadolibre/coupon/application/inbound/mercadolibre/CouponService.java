@@ -1,12 +1,13 @@
 package com.mercadolibre.coupon.application.inbound.mercadolibre;
 
+import com.mercadolibre.coupon.application.inbound.CouponInPort;
 import com.mercadolibre.coupon.application.inbound.mercadolibre.step.CalculateProductsByCoupon;
 import com.mercadolibre.coupon.application.inbound.mercadolibre.step.FetchProducts;
 import com.mercadolibre.coupon.application.inbound.mercadolibre.step.SaveCouponProducts;
 import com.mercadolibre.coupon.application.inbound.mercadolibre.step.SelectBestOfferCoupon;
 import com.mercadolibre.coupon.crosscutting.utility.PropagationExceptionUtility;
 import com.mercadolibre.coupon.domain.context.MessageContext;
-import com.mercadolibre.coupon.domain.context.MessageContextCoupon;
+import com.mercadolibre.coupon.domain.context.MessageContextMercadoLibre;
 import com.mercadolibre.coupon.domain.context.MessageContextEnum;
 import com.mercadolibre.coupon.domain.model.Coupon;
 import lombok.RequiredArgsConstructor;
@@ -15,13 +16,13 @@ import org.springframework.stereotype.Service;
 
 import static com.mercadolibre.coupon.crosscutting.constant.MessageKeys.MSJ_GEN_FOR_SUM_ERROR;
 import static com.mercadolibre.coupon.crosscutting.utility.MessageUtility.getMessage;
-import static com.mercadolibre.coupon.domain.context.MessageContextCoupon.COUPON;
+import static com.mercadolibre.coupon.domain.context.MessageContextMercadoLibre.COUPON;
 import static java.lang.String.format;
 
 @Log4j2
 @Service
 @RequiredArgsConstructor
-public class CouponService implements com.mercadolibre.coupon.application.inbound.CouponService {
+public class CouponService implements CouponInPort {
 
     private static final String CLASS_NAME = CouponService.class.getSimpleName();
 
@@ -33,8 +34,8 @@ public class CouponService implements com.mercadolibre.coupon.application.inboun
 
 
     // Private Methods
-    private MessageContext<MessageContextCoupon, Object> initialPipelineData(final Coupon coupon) {
-        var context = new MessageContextEnum<MessageContextCoupon, Object>(MessageContextCoupon.class);
+    private MessageContext<MessageContextMercadoLibre, Object> initialPipelineData(final Coupon coupon) {
+        var context = new MessageContextEnum<MessageContextMercadoLibre, Object>(MessageContextMercadoLibre.class);
 
         context.addItem(COUPON, coupon);
 

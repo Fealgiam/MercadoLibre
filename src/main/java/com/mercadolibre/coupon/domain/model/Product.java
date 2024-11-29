@@ -19,4 +19,6 @@ public class Product {
 
     private Country country;
 
+    private Long redeemed;
+
 }

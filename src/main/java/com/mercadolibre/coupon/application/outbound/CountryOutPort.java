@@ -5,7 +5,7 @@ import com.mercadolibre.coupon.domain.model.Country;
 import java.util.Optional;
 import java.util.Set;
 
-public interface CountryService {
+public interface CountryOutPort {
 
     Optional<Country> fetchCountry(final String countryCode);
 

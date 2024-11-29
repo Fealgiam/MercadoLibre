@@ -1,7 +1,5 @@
 package com.mercadolibre.coupon.infrastructure.outputpoint.rest;
 
-import com.mercadolibre.coupon.application.outbound.CountryService;
-import com.mercadolibre.coupon.application.outbound.ProductService;
 import com.mercadolibre.coupon.crosscutting.exception.technical.TechnicalException;
 import com.mercadolibre.coupon.crosscutting.utility.PropagationExceptionUtility;
 import com.mercadolibre.coupon.domain.model.Country;
@@ -13,13 +11,20 @@ import com.mercadolibre.coupon.infrastructure.outputpoint.rest.client.MercadoLib
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.mercadolibre.coupon.crosscutting.constant.Constants.CACHE_CALL_APIS;
+import static com.mercadolibre.coupon.crosscutting.constant.Constants.NAME_CACHE_CALL_API_COUNTRIES;
+import static com.mercadolibre.coupon.crosscutting.constant.Constants.NAME_CACHE_CALL_API_COUNTRY;
 import static com.mercadolibre.coupon.crosscutting.constant.MessageKeys.MSJ_GEN_FOR_SUM_ERROR;
 import static com.mercadolibre.coupon.crosscutting.utility.MessageUtility.getMessage;
 import static java.lang.String.format;
@@ -27,9 +32,12 @@ import static java.lang.String.format;
 @Log4j2
 @Component
 @RequiredArgsConstructor
-public class MercadoLibreRestClient implements CountryService, ProductService {
+public class RestClient extends RestClientFallback {
 
-    private static final String CLASS_NAME = MercadoLibreRestClient.class.getSimpleName();
+    private static final String CLASS_NAME = RestClient.class.getSimpleName();
+
+    // Manager Cache
+    private final CacheManager cacheManager;
 
     // Mappers
     private final CountryMapper countryMapper;
@@ -39,8 +47,19 @@ public class MercadoLibreRestClient implements CountryService, ProductService {
     private final MercadoLibreFeignClient mercadoLibreFeignClient;
 
 
+    // Clean cache
+    @Scheduled(cron = "${cron-task.cache.api-call-refresh}")
+    public void clearCacheCountry(){
+        CACHE_CALL_APIS.forEach( cacheName -> {
+            if(Objects.nonNull(cacheManager.getCache(cacheName))) {
+                cacheManager.getCache(cacheName).clear();
+            }
+        });
+    }
+
     // Custom methods
     @Override
+    @Cacheable(value = NAME_CACHE_CALL_API_COUNTRY, cacheManager = "mercadoLibreCacheManager")
     @CircuitBreaker(name = "feignCountryClient", fallbackMethod = "fetchCountryFallback")
     public Optional<Country> fetchCountry(final String countryCode) {
         try {
@@ -53,6 +72,7 @@ public class MercadoLibreRestClient implements CountryService, ProductService {
     }
 
     @Override
+    @Cacheable(value = NAME_CACHE_CALL_API_COUNTRIES, cacheManager = "mercadoLibreCacheManager")
     @CircuitBreaker(name = "feignCountryClient", fallbackMethod = "fetchCountriesFallback")
     public Set<Country> fetchCountries() {
         try {
@@ -92,32 +112,6 @@ public class MercadoLibreRestClient implements CountryService, ProductService {
             log.error(format(getMessage(MSJ_GEN_FOR_SUM_ERROR), CLASS_NAME, "fetchProducts"));
             throw PropagationExceptionUtility.generateMercadoLibreException(ex);
         }
-    }
-
-    // Fallback methods
-    private void commonFallbackMethod(Throwable throwable) {
-        log.debug("commonFallbackMethod");
-        throw PropagationExceptionUtility.generateMercadoLibreException(throwable);
-    }
-
-    protected Optional<Country> fetchCountryFallback(final String countryCode, final Throwable throwable) {
-        this.commonFallbackMethod(throwable);
-        return Optional.empty();
-    }
-
-    protected Set<Country> fetchCountriesFallback(final Throwable throwable) {
-        this.commonFallbackMethod(throwable);
-        return Set.of();
-    }
-
-    protected Optional<Product> fetchProductFallback(final String productId, final Throwable throwable) {
-        this.commonFallbackMethod(throwable);
-        return Optional.empty();
-    }
-
-    protected Set<Product> fetchProductsFallback(final Collection<String> productIds, final Throwable throwable) {
-        this.commonFallbackMethod(throwable);
-        return Set.of();
     }
 
 }

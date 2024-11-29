@@ -25,7 +25,7 @@ import static com.mercadolibre.coupon.crosscutting.constant.MessageKeys.MSJ_RQ_V
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class CouponV1Rq extends CouponRqRs implements Serializable {
+public class CouponRqV1 extends CouponRqRs implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 5065448638242351175L;

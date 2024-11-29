@@ -17,7 +17,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class CouponV1Rs extends CouponRqRs implements Serializable {
+public class CouponRsV1 extends CouponRqRs implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -1866175730182655777L;

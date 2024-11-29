@@ -1,6 +1,7 @@
 package com.mercadolibre.coupon.infrastructure.mapper;
 
 import com.mercadolibre.coupon.domain.model.Product;
+import com.mercadolibre.coupon.infrastructure.model.outputpoint.entity.RedeemedProductDAO;
 import com.mercadolibre.coupon.infrastructure.model.outputpoint.rest.ProductRs;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -47,6 +48,27 @@ public class ProductMapper {
     public Set<Product> mapper(final Set<ProductRs> productsRs) {
         return Optional
                 .ofNullable(productsRs)
+                .orElse(Set.of())
+                .stream()
+                .map(this::mapper)
+                .collect(Collectors.toSet());
+    }
+
+    public Product mapper(final RedeemedProductDAO productDao) {
+        return Optional
+                .ofNullable(productDao)
+                .map(pDao -> Product
+                        .builder()
+                        .country(countryMapper.mapper(pDao.getIdCountry()))
+                        .id(pDao.getIdProduct())
+                        .redeemed(pDao.getNumberRedeemed())
+                        .build())
+                .orElse(Product.builder().build());
+    }
+
+    public Set<Product> mapperDao(final Set<RedeemedProductDAO> productDaos) {
+        return Optional
+                .ofNullable(productDaos)
                 .orElse(Set.of())
                 .stream()
                 .map(this::mapper)

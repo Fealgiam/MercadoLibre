@@ -7,6 +7,7 @@ import com.mercadolibre.coupon.infrastructure.model.entrypoint.ErrorResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import static com.mercadolibre.coupon.crosscutting.constant.MessageKeys.MSJ_GEN_FOR_ERROR;
 import static com.mercadolibre.coupon.crosscutting.constant.MessageKeys.MSJ_GEN_TECHNICAL_ERROR;
+import static com.mercadolibre.coupon.crosscutting.constant.MessageKeys.MSJ_RQ_VAL_HEADER_CONTENT_TYPE;
 import static com.mercadolibre.coupon.crosscutting.utility.MessageUtility.getMessage;
 import static java.lang.String.format;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -68,6 +70,11 @@ public class MercadoLibreExceptionHandler {
                 .toList();
 
         return this.buildResponse(request, messageError, BAD_REQUEST, exception);
+    }
+
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<DataResponse<?>> exception(WebRequest request, HttpMediaTypeNotSupportedException exception) {
+        return this.buildResponse(request, getMessage(MSJ_RQ_VAL_HEADER_CONTENT_TYPE), BAD_REQUEST, exception);
     }
 
     @ExceptionHandler(NoResourceFoundException.class)

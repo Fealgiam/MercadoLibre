@@ -1,9 +1,9 @@
 package com.mercadolibre.coupon.application.inbound.mercadolibre.step;
 
-import com.mercadolibre.coupon.application.outbound.ProductService;
+import com.mercadolibre.coupon.application.outbound.ProductOutPort;
 import com.mercadolibre.coupon.crosscutting.utility.PropagationExceptionUtility;
 import com.mercadolibre.coupon.domain.context.MessageContext;
-import com.mercadolibre.coupon.domain.context.MessageContextCoupon;
+import com.mercadolibre.coupon.domain.context.MessageContextMercadoLibre;
 import com.mercadolibre.coupon.domain.model.Coupon;
 import com.mercadolibre.coupon.domain.model.Product;
 import lombok.RequiredArgsConstructor;
@@ -15,31 +15,31 @@ import java.util.stream.Collectors;
 
 import static com.mercadolibre.coupon.crosscutting.constant.MessageKeys.MSJ_GEN_FOR_SUM_ERROR;
 import static com.mercadolibre.coupon.crosscutting.utility.MessageUtility.getMessage;
-import static com.mercadolibre.coupon.domain.context.MessageContextCoupon.COUPON;
-import static com.mercadolibre.coupon.domain.context.MessageContextCoupon.PRODUCTS;
+import static com.mercadolibre.coupon.domain.context.MessageContextMercadoLibre.COUPON;
+import static com.mercadolibre.coupon.domain.context.MessageContextMercadoLibre.PRODUCTS;
 import static java.lang.String.format;
 
 @Log4j2
 @Component
 @RequiredArgsConstructor
-public class FetchProducts implements UnaryOperator<MessageContext<MessageContextCoupon, Object>> {
+public class FetchProducts implements UnaryOperator<MessageContext<MessageContextMercadoLibre, Object>> {
 
     private static final String CLASS_NAME = FetchProducts.class.getSimpleName();
 
     // Services
-    private final ProductService productService;
+    private final ProductOutPort productOutPort;
 
 
     @Override
-    public MessageContext<MessageContextCoupon, Object> apply(
-            final MessageContext<MessageContextCoupon, Object> context) {
+    public MessageContext<MessageContextMercadoLibre, Object> apply(
+            final MessageContext<MessageContextMercadoLibre, Object> context) {
         try {
             // load properties
             final var coupon = context.getItem(COUPON, Coupon.class);
             final var productIds = coupon.getProducts().stream().map(Product::getId).toList();
 
             // Fetch products
-            final var productsByCountry = productService
+            final var productsByCountry = productOutPort
                     .fetchProducts(productIds)
                     .stream()
                     .collect(Collectors.groupingBy(product -> product.getCountry().getCode(), Collectors.toSet()));

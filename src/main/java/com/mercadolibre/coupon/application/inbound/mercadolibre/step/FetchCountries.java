@@ -1,41 +1,47 @@
 package com.mercadolibre.coupon.application.inbound.mercadolibre.step;
 
-import com.mercadolibre.coupon.application.outbound.CouponOutPort;
+import com.mercadolibre.coupon.application.outbound.CountryOutPort;
 import com.mercadolibre.coupon.crosscutting.utility.PropagationExceptionUtility;
 import com.mercadolibre.coupon.domain.context.MessageContext;
 import com.mercadolibre.coupon.domain.context.MessageContextMercadoLibre;
-import com.mercadolibre.coupon.domain.model.Coupon;
+import com.mercadolibre.coupon.domain.model.Country;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 
 import static com.mercadolibre.coupon.crosscutting.constant.MessageKeys.MSJ_GEN_FOR_SUM_ERROR;
 import static com.mercadolibre.coupon.crosscutting.utility.MessageUtility.getMessage;
-import static com.mercadolibre.coupon.domain.context.MessageContextMercadoLibre.COUPON;
+import static com.mercadolibre.coupon.domain.context.MessageContextMercadoLibre.COUNTRIES;
 import static java.lang.String.format;
 
 @Log4j2
 @Component
-@RequiredArgsConstructor
-public class SaveCouponProducts implements UnaryOperator<MessageContext<MessageContextMercadoLibre, Object>> {
 
-    private static final String CLASS_NAME = SaveCouponProducts.class.getSimpleName();
+@RequiredArgsConstructor
+public class FetchCountries implements UnaryOperator<MessageContext<MessageContextMercadoLibre, Object>> {
+
+    private static final String CLASS_NAME = FetchCountries.class.getSimpleName();
 
     // Services
-    private final CouponOutPort couponOutPort;
+    private final CountryOutPort countryOutPort;
 
 
     @Override
     public MessageContext<MessageContextMercadoLibre, Object> apply(
             final MessageContext<MessageContextMercadoLibre, Object> context) {
         try {
-            // load properties
-            final var couponRedeemed = context.getItem(COUPON, Coupon.class);
+            // Transform to Map
+            final var countries =  countryOutPort
+                    .fetchCountries()
+                    .stream()
+                    .collect(Collectors.toMap(Country::getCode, Function.identity()));
 
-            // Save products redeemed for the coupon value
-            couponOutPort.saveCouponRedeemed(couponRedeemed);
+            // Add in context
+            context.addItem(COUNTRIES, countries);
 
             return context;
         } catch (Exception ex) {

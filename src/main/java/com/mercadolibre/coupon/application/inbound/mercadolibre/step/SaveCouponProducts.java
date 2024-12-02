@@ -17,6 +17,7 @@ import java.time.Duration;
 import java.util.function.UnaryOperator;
 
 import static com.mercadolibre.coupon.crosscutting.constant.MessageKeys.MSJ_BUSINESS_COUPON_INAPPLICABLE;
+import static com.mercadolibre.coupon.crosscutting.constant.MessageKeys.MSJ_GEN_DEBUG_TERMINATE;
 import static com.mercadolibre.coupon.crosscutting.constant.MessageKeys.MSJ_GEN_FOR_SUM_ERROR;
 import static com.mercadolibre.coupon.crosscutting.utility.MessageUtility.getMessage;
 import static com.mercadolibre.coupon.domain.context.MessageContextMercadoLibre.COUPON;
@@ -48,7 +49,7 @@ public class SaveCouponProducts implements UnaryOperator<MessageContext<MessageC
                     .asMono()
                     .timeout(Duration.ofMinutes(2))
                     .doOnError(err -> Mono.error(new TechnicalException(err.getMessage())))
-                    .doOnTerminate(() -> log.debug("Flow terminated"))
+                    .doOnTerminate(() -> log.debug(getMessage(MSJ_GEN_DEBUG_TERMINATE)))
                     .blockOptional()
                     .ifPresent(bestCoupon -> this.validateResponseAndSaveCouponRedeemed(coupon, bestCoupon));
 

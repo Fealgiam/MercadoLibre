@@ -9,6 +9,7 @@ public class MessageKeys {
     /**
      * Messages generic
      */
+    public static final String MSJ_GEN_DEBUG_TERMINATE = "message.generci.debbug.terminate";
     public static final String MSJ_GEN_FOR_ERROR = "message.generic.format.error";
     public static final String MSJ_GEN_FOR_SUM_ERROR = "message.generic.format.error.summary";
     public static final String MSJ_GEN_TECHNICAL_ERROR = "message.generic.technical.error";

@@ -1,5 +1,7 @@
 package com.mercadolibre.coupon.infrastructure.outputpoint.rest;
 
+import com.mercadolibre.coupon.application.outbound.CountryOutPort;
+import com.mercadolibre.coupon.application.outbound.ProductOutPort;
 import com.mercadolibre.coupon.crosscutting.exception.technical.TechnicalException;
 import com.mercadolibre.coupon.crosscutting.utility.PropagationExceptionUtility;
 import com.mercadolibre.coupon.domain.model.Country;
@@ -8,7 +10,7 @@ import com.mercadolibre.coupon.infrastructure.mapper.CountryMapper;
 import com.mercadolibre.coupon.infrastructure.mapper.ProductMapper;
 import com.mercadolibre.coupon.infrastructure.model.outputpoint.rest.ProductRs;
 import com.mercadolibre.coupon.infrastructure.outputpoint.rest.client.MercadoLibreFeignClient;
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.cache.CacheManager;
@@ -32,7 +34,7 @@ import static java.lang.String.format;
 @Log4j2
 @Component
 @RequiredArgsConstructor
-public class RestClient extends RestClientFallback {
+public class RestClient implements CountryOutPort, ProductOutPort {
 
     private static final String CLASS_NAME = RestClient.class.getSimpleName();
 
@@ -49,9 +51,9 @@ public class RestClient extends RestClientFallback {
 
     // Clean cache
     @Scheduled(cron = "${cron-task.cache.api-call-refresh}")
-    public void clearCacheCountry(){
-        CACHE_CALL_APIS.forEach( cacheName -> {
-            if(Objects.nonNull(cacheManager.getCache(cacheName))) {
+    public void clearCacheCountry() {
+        CACHE_CALL_APIS.forEach(cacheName -> {
+            if (Objects.nonNull(cacheManager.getCache(cacheName))) {
                 cacheManager.getCache(cacheName).clear();
             }
         });
@@ -59,8 +61,8 @@ public class RestClient extends RestClientFallback {
 
     // Custom methods
     @Override
+    @Retry(name = "feignCountryClient")
     @Cacheable(value = NAME_CACHE_CALL_API_COUNTRY, cacheManager = "mercadoLibreCacheManager")
-    @CircuitBreaker(name = "feignCountryClient", fallbackMethod = "fetchCountryFallback")
     public Optional<Country> fetchCountry(final String countryCode) {
         try {
             final var countryRs = mercadoLibreFeignClient.getSite(countryCode);
@@ -72,8 +74,8 @@ public class RestClient extends RestClientFallback {
     }
 
     @Override
+    @Retry(name = "feignCountryClient")
     @Cacheable(value = NAME_CACHE_CALL_API_COUNTRIES, cacheManager = "mercadoLibreCacheManager")
-    @CircuitBreaker(name = "feignCountryClient", fallbackMethod = "fetchCountriesFallback")
     public Set<Country> fetchCountries() {
         try {
             final var countryRs = mercadoLibreFeignClient.getSites();
@@ -85,7 +87,7 @@ public class RestClient extends RestClientFallback {
     }
 
     @Override
-    @CircuitBreaker(name = "feignProductClient", fallbackMethod = "fetchProductFallback")
+    @Retry(name = "feignProductClient")
     public Optional<Product> fetchProduct(final String productId) {
         try {
             final var productRs = mercadoLibreFeignClient.getItem(productId);
@@ -97,13 +99,14 @@ public class RestClient extends RestClientFallback {
     }
 
     @Override
-    @CircuitBreaker(name = "feignProductClient", fallbackMethod = "fetchProductsFallback")
-    public Set<Product> fetchProducts(final Collection<String> productIds) {
+    @Retry(name = "feignProductClient")
+    public Collection<Product> fetchProducts(final Collection<String> productIds) {
         try {
             // TODO - Implement call services to get multiple products. - The service requires authentication.
             //final var ids = String.join(",", productIds);
             //final var productsRs = mercadoLibreFeignClient.getItems(ids);
 
+            // Alternative implementation
             final var productsRs = new HashSet<ProductRs>();
             productIds.forEach(productId -> productsRs.add(mercadoLibreFeignClient.getItem(productId)));
 

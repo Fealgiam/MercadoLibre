@@ -25,8 +25,8 @@ public class ProductRsV1Mapper {
     }
 
     // Private Methods
-    private Map<String, Long> getMapFromSetProducts(Set<Product> products) {
-        return products.stream().collect(Collectors.toMap(Product::getId, Product::getRedeemed));
+    private Map<String, Integer> getMapFromSetProducts(Set<Product> products) {
+        return products.stream().collect(Collectors.toMap(Product::getId, Product::getTimesRedeemed));
     }
 
 }

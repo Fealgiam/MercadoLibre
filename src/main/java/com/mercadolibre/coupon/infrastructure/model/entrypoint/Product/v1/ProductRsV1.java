@@ -27,6 +27,6 @@ public class ProductRsV1 extends ProductRqRs implements Serializable {
     }
 
     @JsonProperty("items_redeemed")
-    private Map<String, Long> itemsRedeemed;
+    private Map<String, Integer> itemsRedeemed;
 
 }

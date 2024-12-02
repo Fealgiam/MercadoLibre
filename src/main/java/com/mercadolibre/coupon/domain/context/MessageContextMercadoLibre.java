@@ -8,8 +8,9 @@ public enum MessageContextMercadoLibre {
 
     // Coupon
     COUPON,
-    PRODUCTS,
-    PRODUCTS_BY_COUPON,
+    PRODUCTS_BY_COUNTRY,
+    COUPONS_BY_COUNTRY,
+    COUPONS_PROCESS,
 
     // Product
     LIMIT,

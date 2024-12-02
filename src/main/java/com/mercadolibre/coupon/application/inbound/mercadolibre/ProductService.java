@@ -40,9 +40,7 @@ public class ProductService implements ProductInPort {
     // Private Methods
     private MessageContext<MessageContextMercadoLibre, Object> initialPipelineData(final Optional<Integer> limit,
                                                                                    final String... country) {
-
         var context = new MessageContextEnum<MessageContextMercadoLibre, Object>(MessageContextMercadoLibre.class);
-
         context.addItem(LIMIT, limit);
 
         if (Objects.nonNull(country) && country.length > 0) {
@@ -54,6 +52,7 @@ public class ProductService implements ProductInPort {
 
     // Custom Methods
     @Override
+    @SuppressWarnings("unchecked")
     public Set<Product> fetchRedeemedProducts(Optional<Integer> limit) {
         try {
             return fetchProductsRedeemed
@@ -66,6 +65,7 @@ public class ProductService implements ProductInPort {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Set<Product> fetchRedeemedProductsByCountry(String country, Optional<Integer> limit) {
         try {
             return fetchCountries

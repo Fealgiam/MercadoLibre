@@ -1,7 +1,7 @@
 package com.mercadolibre.coupon.application.inbound.mercadolibre;
 
 import com.mercadolibre.coupon.application.inbound.CouponInPort;
-import com.mercadolibre.coupon.application.inbound.mercadolibre.step.CalculateProductsByCoupon;
+import com.mercadolibre.coupon.application.inbound.mercadolibre.step.BuildCouponByCountry;
 import com.mercadolibre.coupon.application.inbound.mercadolibre.step.FetchProducts;
 import com.mercadolibre.coupon.application.inbound.mercadolibre.step.SaveCouponProducts;
 import com.mercadolibre.coupon.application.inbound.mercadolibre.step.SelectBestOfferCoupon;
@@ -29,8 +29,8 @@ public class CouponService implements CouponInPort {
     // Steps
     private final FetchProducts fetchProducts;
     private final SaveCouponProducts saveCouponProducts;
+    private final BuildCouponByCountry buildCouponByCountry;
     private final SelectBestOfferCoupon selectBestOfferCoupon;
-    private final CalculateProductsByCoupon calculateProductsByCoupon;
 
 
     // Private Methods
@@ -46,12 +46,18 @@ public class CouponService implements CouponInPort {
     @Override
     public Coupon calculateBestOfferCoupon(final Coupon coupon) {
         try {
-            return fetchProducts
-                    .andThen(calculateProductsByCoupon)
+            var contextCalculateBestOfferCoupon = this.initialPipelineData(coupon);
+
+            var couponRedeemed = fetchProducts
+                    .andThen(buildCouponByCountry)
                     .andThen(selectBestOfferCoupon)
                     .andThen(saveCouponProducts)
-                    .apply(this.initialPipelineData(coupon))
+                    .apply(contextCalculateBestOfferCoupon)
                     .getItem(COUPON, Coupon.class);
+
+            contextCalculateBestOfferCoupon.clean();
+
+            return couponRedeemed;
         } catch (Exception ex) {
             log.error(format(getMessage(MSJ_GEN_FOR_SUM_ERROR), CLASS_NAME, "calculateBestOfferCoupon"));
             throw PropagationExceptionUtility.generateMercadoLibreException(ex);

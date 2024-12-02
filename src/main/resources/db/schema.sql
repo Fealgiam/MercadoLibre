@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS redeemed_products
 CREATE INDEX idx_id_country ON redeemed_products (id_country);
 
 CREATE TRIGGER increment_value_insert
+
     BEFORE INSERT ON redeemed_products
     FOR EACH ROW
     CALL "com.mercadolibre.coupon.infrastructure.outputpoint.jpa.repository.TriggerUpdateNumberRedeemed";

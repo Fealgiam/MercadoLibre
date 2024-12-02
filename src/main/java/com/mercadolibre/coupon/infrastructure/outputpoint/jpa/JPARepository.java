@@ -1,12 +1,14 @@
 package com.mercadolibre.coupon.infrastructure.outputpoint.jpa;
 
+import com.mercadolibre.coupon.application.outbound.CouponOutPort;
+import com.mercadolibre.coupon.application.outbound.ProductRedeemedOutPort;
 import com.mercadolibre.coupon.crosscutting.exception.technical.TechnicalException;
 import com.mercadolibre.coupon.domain.model.Coupon;
 import com.mercadolibre.coupon.domain.model.Product;
 import com.mercadolibre.coupon.infrastructure.mapper.ProductMapper;
 import com.mercadolibre.coupon.infrastructure.mapper.RedeemedProductDAOMapper;
 import com.mercadolibre.coupon.infrastructure.outputpoint.jpa.repository.RedeemedProductRepository;
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.PageRequest;
@@ -24,7 +26,7 @@ import static java.lang.String.format;
 @Log4j2
 @Component
 @RequiredArgsConstructor
-public class JPARepository extends JPARepositoryFallback {
+public class JPARepository implements CouponOutPort, ProductRedeemedOutPort {
 
     private static final String CLASS_NAME = JPARepository.class.getSimpleName();
 
@@ -38,8 +40,8 @@ public class JPARepository extends JPARepositoryFallback {
 
     // Custom methods
     @Override
+    @Retry(name = "repositoryCouponClient")
     @Transactional
-    @CircuitBreaker(name = "repositoryCouponClient", fallbackMethod = "saveCouponRedeemedFallback")
     public void saveCouponRedeemed(final Coupon coupon) {
         try {
             final var ids = redeemedProductDAOMapper.mapper(coupon.getProductsRedeemable());
@@ -51,7 +53,7 @@ public class JPARepository extends JPARepositoryFallback {
     }
 
     @Override
-    @CircuitBreaker(name = "repositoryCouponClient", fallbackMethod = "fetchProductRedeemedFallback")
+    @Retry(name = "repositoryCouponClient")
     public Set<Product> fetchProductRedeemed(final Integer limit) {
         try {
             final Pageable pageable = PageRequest.of(0, limit);
@@ -65,7 +67,7 @@ public class JPARepository extends JPARepositoryFallback {
     }
 
     @Override
-    @CircuitBreaker(name = "repositoryCouponClient", fallbackMethod = "fetchProductRedeemedByCountryFallback")
+    @Retry(name = "repositoryCouponClient")
     public Set<Product> fetchProductRedeemedByCountry(final String country, final Integer limit) {
         try {
             final Pageable pageable = PageRequest.of(0, limit);

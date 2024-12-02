@@ -9,6 +9,9 @@ import com.mercadolibre.coupon.infrastructure.mapper.CouponRsV1Mapper;
 import com.mercadolibre.coupon.infrastructure.model.entrypoint.DataResponse;
 import com.mercadolibre.coupon.infrastructure.model.entrypoint.coupon.v1.CouponRqV1;
 import com.mercadolibre.coupon.infrastructure.model.entrypoint.coupon.v1.CouponRsV1;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -38,14 +41,17 @@ public class CouponRedeemedV1Controller implements CouponRedeemedController<Coup
     private final CouponRsV1Mapper couponRsV1Mapper;
 
     // Services
-    private final CouponInPort couponIterativeService;
+    private final CouponInPort couponService;
 
 
     @Override
+    @Retry(name = "couponRedeemed")
+    @RateLimiter(name = "couponRedeemed")
+    @CircuitBreaker(name = "couponRedeemed")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DataResponse<CouponRsV1>> calculateBestOfferCoupon(@Valid @RequestBody final CouponRqV1 coupons) {
         try {
-            Coupon couponRedeemable = couponIterativeService.calculateBestOfferCoupon(couponMapper.mapper(coupons));
+            Coupon couponRedeemable = couponService.calculateBestOfferCoupon(couponMapper.mapper(coupons));
             return this.buildResponse(couponRsV1Mapper.mapper(couponRedeemable));
         } catch (Exception ex) {
             log.error(format(getMessage(MSJ_GEN_FOR_SUM_ERROR), CLASS_NAME, "calculateBestOfferCoupon"));

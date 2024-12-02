@@ -24,3 +24,6 @@ dependencyCheck {
     //check.dependsOn(dependencyCheckAnalyze)
 }
 /*--------------------------------------------------------------------------------------------------------------------*/
+tasks.withType(JavaCompile) {
+    options.compilerArgs << '-Xlint:unchecked'
+}

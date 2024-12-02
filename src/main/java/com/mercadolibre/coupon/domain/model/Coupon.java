@@ -2,23 +2,48 @@ package com.mercadolibre.coupon.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
-@Data
 @Builder
+@ToString
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 public class Coupon {
 
-    private Double amount;
+    @Getter
+    @Setter
+    @Builder.Default
+    private Double amount = Double.valueOf(0);
 
-    private Double amountRedeemable;
+    @Getter
+    @Setter
+    @Builder.Default
+    private Boolean applyFilter = Boolean.TRUE;
 
-    private Set<Product> products;
+    @Getter
+    @Setter
+    @Builder.Default
+    private Double amountRedeemable = Double.valueOf(0);
 
-    private Set<Product> productsRedeemable;
+    @Getter
+    private Integer amountConversion = Integer.valueOf(1);
+
+    @Getter
+    @Setter
+    @Builder.Default
+    private List<Product> products = new ArrayList<>();
+
+    @Getter
+    @Setter
+    @Builder.Default
+    private List<Product> productsRedeemable = new ArrayList<>();
 
 }

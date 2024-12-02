@@ -5,6 +5,7 @@ import com.mercadolibre.coupon.infrastructure.model.outputpoint.entity.RedeemedP
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -24,10 +25,10 @@ public class RedeemedProductDAOMapper {
                 .orElse(RedeemedProductDAO.builder().build());
     }
 
-    public Set<RedeemedProductDAO> mapper(final Set<Product> products) {
+    public Set<RedeemedProductDAO> mapper(final List<Product> products) {
         return Optional
                 .ofNullable(products)
-                .orElse(Set.of())
+                .orElse(List.of())
                 .stream()
                 .map(this::mapper)
                 .collect(Collectors.toSet());

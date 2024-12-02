@@ -33,6 +33,7 @@ public class FetchProductsRedeemed implements UnaryOperator<MessageContext<Messa
 
 
     @Override
+    @SuppressWarnings("unchecked")
     public MessageContext<MessageContextMercadoLibre, Object> apply(
             final MessageContext<MessageContextMercadoLibre, Object> context) {
         try {

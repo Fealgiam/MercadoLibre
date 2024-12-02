@@ -9,6 +9,7 @@ import static com.mercadolibre.coupon.crosscutting.constant.ResourceEndpoints.X_
 
 public interface CouponRedeemedController<I extends CouponRqRs, O extends CouponRqRs> {
 
+    // Common methods
     default ResponseEntity<DataResponse<O>> buildResponse(final O response) {
         var responseHeaders = new HttpHeaders();
         responseHeaders.set(X_API_VERSION, response.getVersion());
@@ -19,6 +20,7 @@ public interface CouponRedeemedController<I extends CouponRqRs, O extends Coupon
                 .body(DataResponse.<O>builder().data(response).build());
     }
 
+    // Contract methods
     ResponseEntity<DataResponse<O>> calculateBestOfferCoupon(final I coupons);
 
 }

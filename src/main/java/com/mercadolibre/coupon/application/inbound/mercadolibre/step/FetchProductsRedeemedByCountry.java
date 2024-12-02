@@ -43,6 +43,7 @@ public class FetchProductsRedeemedByCountry
 
 
     @Override
+    @SuppressWarnings("unchecked")
     public MessageContext<MessageContextMercadoLibre, Object> apply(
             final MessageContext<MessageContextMercadoLibre, Object> context) {
         try {

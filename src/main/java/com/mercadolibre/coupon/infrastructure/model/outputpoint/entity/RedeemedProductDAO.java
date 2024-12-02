@@ -34,7 +34,7 @@ public class RedeemedProductDAO implements Serializable {
     private String idCountry;
 
     @Column(name = "number_redeemed")
-    private Long numberRedeemed;
+    private Integer numberRedeemed;
 
     @Builder.Default
     @Column(name = "update_date")

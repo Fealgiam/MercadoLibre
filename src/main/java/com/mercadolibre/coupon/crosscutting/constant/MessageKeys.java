@@ -12,6 +12,7 @@ public class MessageKeys {
     public static final String MSJ_GEN_FOR_ERROR = "message.generic.format.error";
     public static final String MSJ_GEN_FOR_SUM_ERROR = "message.generic.format.error.summary";
     public static final String MSJ_GEN_TECHNICAL_ERROR = "message.generic.technical.error";
+    public static final String MSJ_GEN_TECHNICAL_RATE_LIMITER = "message.generic.technical.rateLimiter";
 
     /**
      * Messages exceptions
@@ -26,6 +27,7 @@ public class MessageKeys {
 
     public static final String MSJ_RQ_VAL_AMOUNT_NULL = "message.request.validation.amount.null";
     public static final String MSJ_RQ_VAL_AMOUNT_POSITIVE = "message.request.validation.amount.positive";
+    public static final String MSJ_RQ_VAL_AMOUNT_DIGITS = "message.request.validation.amount.digits";
 
     public static final String MSJ_RQ_VAL_ITEMS_NULL = "message.request.validation.items.null";
     public static final String MSJ_RQ_VAL_ITEMS_EMPTY = "message.request.validation.items.empty";

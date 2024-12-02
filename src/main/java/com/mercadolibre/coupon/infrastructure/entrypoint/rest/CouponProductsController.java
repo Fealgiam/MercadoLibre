@@ -11,6 +11,7 @@ import static com.mercadolibre.coupon.crosscutting.constant.ResourceEndpoints.X_
 
 public interface CouponProductsController<O extends ProductRqRs> {
 
+    // Common methods
     default ResponseEntity<DataResponse<O>> buildResponse(final O response) {
         var responseHeaders = new HttpHeaders();
         responseHeaders.set(X_API_VERSION, response.getVersion());
@@ -21,6 +22,7 @@ public interface CouponProductsController<O extends ProductRqRs> {
                 .body(DataResponse.<O>builder().data(response).build());
     }
 
+    // Contract methods
     ResponseEntity<DataResponse<O>> fetchTopProductsRedeemedByCoupon(final Optional<Integer> numRecords);
 
     ResponseEntity<DataResponse<O>> fetchTopProductsRedeemedByCouponByCountry(final String countryCode,

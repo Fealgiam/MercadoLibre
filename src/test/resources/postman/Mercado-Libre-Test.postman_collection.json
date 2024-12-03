@@ -1,0 +1,293 @@
+{
+	"info": {
+		"_postman_id": "a526aab6-147f-447a-8dd0-307aa0b22774",
+		"name": "Mercado-Libre-Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5046336"
+	},
+	"item": [
+		{
+			"name": "Verificacion",
+			"item": [
+				{
+					"name": "caches",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_cupon}}/mercado-libre/actuator/caches",
+							"host": [
+								"{{url_cupon}}"
+							],
+							"path": [
+								"mercado-libre",
+								"actuator",
+								"caches"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "actuator",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_cupon}}/mercado-libre/actuator",
+							"host": [
+								"{{url_cupon}}"
+							],
+							"path": [
+								"mercado-libre",
+								"actuator"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_cupon}}/mercado-libre/actuator/health",
+							"host": [
+								"{{url_cupon}}"
+							],
+							"path": [
+								"mercado-libre",
+								"actuator",
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "circuitbreakers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_cupon}}/mercado-libre/actuator/circuitbreakers",
+							"host": [
+								"{{url_cupon}}"
+							],
+							"path": [
+								"mercado-libre",
+								"actuator",
+								"circuitbreakers"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Funcionalidad",
+			"item": [
+				{
+					"name": "reto1-validate-coupon",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es",
+								"type": "text"
+							},
+							{
+								"key": "x-api-version",
+								"value": "v1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"amount\":  1200000.00,\r\n   \"item_ids\": [\"MCO1480838649\",\"MCO1493507143\",\"MCO2669173224\",\"MCO1466867097\",\"MCO1419597389\"] \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/mercado-libre/coupon",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"mercado-libre",
+								"coupon"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reto2-fetch-products-redeemed",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es",
+								"type": "text"
+							},
+							{
+								"key": "x-api-version",
+								"value": "v1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"amount\":  1200000.00,\r\n   \"item_ids\": [\"MCO1480838649\",\"MCO1493507143\",\"MCO2669173224\",\"MCO1466867097\",\"MCO1419597389\"] \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/mercado-libre/coupon/products?number_record_param=5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"mercado-libre",
+								"coupon",
+								"products"
+							],
+							"query": [
+								{
+									"key": "number_record_param",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reto2-fetch-products-redeemed-by-country",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es",
+								"type": "text"
+							},
+							{
+								"key": "x-api-version",
+								"value": "v1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"amount\":  1200000.00,\r\n   \"item_ids\": [\"MCO1480838649\",\"MCO1493507143\",\"MCO2669173224\",\"MCO1466867097\",\"MCO1419597389\"] \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/mercado-libre/coupon/products/:country_code?number_record_param=2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"mercado-libre",
+								"coupon",
+								"products",
+								":country_code"
+							],
+							"query": [
+								{
+									"key": "number_record_param",
+									"value": "2"
+								}
+							],
+							"variable": [
+								{
+									"key": "country_code",
+									"value": "MCO"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Swagger",
+			"item": [
+				{
+					"name": "api-docs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_cupon}}/mercado-libre/swagger-api-docs",
+							"host": [
+								"{{url_cupon}}"
+							],
+							"path": [
+								"mercado-libre",
+								"swagger-api-docs"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

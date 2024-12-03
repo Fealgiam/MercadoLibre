@@ -19,7 +19,7 @@ management:
       enabled: true
     web:
       exposure:
-        include: "*"
+        include: health, info, caches, circuitbreakers
   endpoint:
     health:
       show-details: always

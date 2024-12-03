@@ -3,13 +3,13 @@ package com.mercadolibre.coupon.application.outbound;
 import com.mercadolibre.coupon.domain.model.Product;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
-public interface ProductService {
+public interface ProductOutPort {
 
     Optional<Product> fetchProduct(final String productId);
 
-    Set<Product> fetchProducts(final Collection<String> productIds);
+    List<Product> fetchProducts(final Collection<String> productIds);
 
 }

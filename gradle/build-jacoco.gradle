@@ -8,7 +8,15 @@
  */
 
 def jacocoCoverage = 0.8
-def jacocoExclude = ["**/*"]
+def jacocoExclude = [
+        "/com/mercadolibre/coupon/application/**/*.*",
+        "/com/mercadolibre/coupon/configuration/*.*",
+        "/com/mercadolibre/coupon/crosscutting/**/*.*",
+        "/com/mercadolibre/coupon/domain/**",
+        "/com/mercadolibre/coupon/infrastructure/model/**",
+        "/com/mercadolibre/coupon/infrastructure/outputpoint/**",
+        "/com/mercadolibre/coupon/*CouponApplication*"
+]
 
 test {
     useJUnitPlatform()
@@ -23,6 +31,7 @@ jacocoTestReport {
         csv.required = false
         html.outputLocation = layout.buildDirectory.dir("/reports/jacoco/test/jacocoTest.xml")
     }
+
     excludeClassFilesForReport(classDirectories, jacocoExclude)
 }
 
@@ -39,5 +48,5 @@ jacocoTestCoverageVerification {
 }
 
 private excludeClassFilesForReport(classDirectories, jacocoExclude) {
-    classDirectories.setFrom( files( classDirectories.files.collect { fileTree(dir: it, exclude: jacocoExclude) } ) )
+    classDirectories.setFrom(files(classDirectories.files.collect { fileTree(dir: it, exclude: jacocoExclude) }))
 }

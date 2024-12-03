@@ -9,9 +9,11 @@ public class MessageKeys {
     /**
      * Messages generic
      */
+    public static final String MSJ_GEN_DEBUG_TERMINATE = "message.generci.debbug.terminate";
     public static final String MSJ_GEN_FOR_ERROR = "message.generic.format.error";
     public static final String MSJ_GEN_FOR_SUM_ERROR = "message.generic.format.error.summary";
     public static final String MSJ_GEN_TECHNICAL_ERROR = "message.generic.technical.error";
+    public static final String MSJ_GEN_TECHNICAL_RATE_LIMITER = "message.generic.technical.rateLimiter";
 
     /**
      * Messages exceptions
@@ -22,14 +24,18 @@ public class MessageKeys {
     /**
      * Messages request validation
      */
+    public static final String MSJ_RQ_VAL_COUNTRY = "message.request.validation.country";
+
     public static final String MSJ_RQ_VAL_AMOUNT_NULL = "message.request.validation.amount.null";
     public static final String MSJ_RQ_VAL_AMOUNT_POSITIVE = "message.request.validation.amount.positive";
+    public static final String MSJ_RQ_VAL_AMOUNT_DIGITS = "message.request.validation.amount.digits";
 
     public static final String MSJ_RQ_VAL_ITEMS_NULL = "message.request.validation.items.null";
     public static final String MSJ_RQ_VAL_ITEMS_EMPTY = "message.request.validation.items.empty";
 
     public static final String MSJ_RQ_VAL_HEADER_VERSION = "message.request.validation.header.version";
     public static final String MSJ_RQ_VAL_HEADER_LANGUAGE = "message.request.validation.header.language";
+    public static final String MSJ_RQ_VAL_HEADER_CONTENT_TYPE = "message.request.validation.header.mediaType";
 
     /**
      * Messages context error

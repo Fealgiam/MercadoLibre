@@ -10,14 +10,14 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class CouponV1Rs extends CouponRqRs implements Serializable {
+public class CouponRsV1 extends CouponRqRs implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -1866175730182655777L;
@@ -29,6 +29,6 @@ public class CouponV1Rs extends CouponRqRs implements Serializable {
     private Double total;
 
     @JsonProperty("item_ids")
-    private Set<String> items;
+    private List<String> items;
 
 }

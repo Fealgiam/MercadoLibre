@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 @Data
 @Builder
@@ -13,10 +14,13 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(of = "code")
 public class Country {
 
-    private String code;
+    @Builder.Default
+    private String code = StringUtils.EMPTY;
 
-    private String name;
+    @Builder.Default
+    private String name = StringUtils.EMPTY;
 
-    private String currency;
+    @Builder.Default
+    private String currency = StringUtils.EMPTY;
 
 }

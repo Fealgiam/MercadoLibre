@@ -13,8 +13,17 @@ public class ResourceEndpoints {
     public static final String X_API_VERSION_V1 = X_API_VERSION + "=v1";
 
     /**
+     * Custom params
+     */
+    public static final String COUNTRY_CODE_PARAM = "country_code";
+    public static final String NUMBER_RECORD_PARAM = "number_record_param";
+
+    /**
      * Endpoints
      */
     public static final String COUPON_PATH = "/coupon";
+
+    public static final String COUPON_PRODUCTS_PATH = "/coupon/products";
+    public static final String COUPON_PRODUCTS_COUNTRY_PATH = "/{country_code}";
 
 }

@@ -7,6 +7,7 @@ server:
 logging:
   level:
     root: INFO
+    org.springdoc: DEBUG
     org.springframework.web: INFO
     org.hibernate: INFO
     com.mercadolibre.coupon: DEBUG
@@ -22,6 +23,15 @@ management:
   endpoint:
     health:
       show-details: always
+
+# Swagger configurations
+springdoc:
+  api-docs:
+    enabled: true
+    path: /swagger-api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
 
 # Spring configurations
 spring:
@@ -52,7 +62,12 @@ spring:
 
 # Application configuration
 application:
+  default-limit: 5
   conversion-value: 100
+
+cron-task:
+  cache:
+    api-call-refresh: 0 */10 * * * ?
 
 # Services configurations
 services:
@@ -68,30 +83,52 @@ services:
 resilience4j:
   circuitbreaker:
     instances:
+      # Entry-point
+      couponRedeemed:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 4
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowType: COUNT_BASED
+        maxWaitDurationInHalfOpenState: 3m
+      couponProducts:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 4
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowType: COUNT_BASED
+        maxWaitDurationInHalfOpenState: 3m
+  ratelimiter:
+    instances:
+      # Entry-point
+      couponRedeemed:
+        limit-for-period: 120
+        limit-refresh-period: 1m
+        timeout-duration: 0
+      couponProducts:
+        limit-for-period: 120
+        limit-refresh-period: 1m
+        timeout-duration: 0
+  retry:
+    instances:
+      # Entry-point
+      couponRedeemed:
+        max-attempts: 3
+        wait-duration: 1s
+      couponProducts:
+        max-attempts: 3
+        wait-duration: 1s
+      # Output-point
       feignCountryClient:
-        registerHealthIndicator: true
-        slidingWindowSize: 10
-        minimumNumberOfCalls: 4
-        failureRateThreshold: 50
-        waitDurationInOpenState: 10s
-        permittedNumberOfCallsInHalfOpenState: 3
-        slidingWindowType: COUNT_BASED
-        maxWaitDurationInHalfOpenState: 3m
+        max-attempts: 3
+        wait-duration: 1s
       feignProductClient:
-        registerHealthIndicator: true
-        slidingWindowSize: 10
-        minimumNumberOfCalls: 4
-        failureRateThreshold: 50
-        waitDurationInOpenState: 10s
-        permittedNumberOfCallsInHalfOpenState: 3
-        slidingWindowType: COUNT_BASED
-        maxWaitDurationInHalfOpenState: 3m
+        max-attempts: 3
+        wait-duration: 1s
       repositoryCouponClient:
-        registerHealthIndicator: true
-        slidingWindowSize: 10
-        minimumNumberOfCalls: 4
-        failureRateThreshold: 50
-        waitDurationInOpenState: 10s
-        permittedNumberOfCallsInHalfOpenState: 3
-        slidingWindowType: COUNT_BASED
-        maxWaitDurationInHalfOpenState: 3m
+        max-attempts: 3
+        wait-duration: 1s

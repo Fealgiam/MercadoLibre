@@ -21,7 +21,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @Entity
 @Table(name = "redeemed_products")
-public class RedeemedProduct implements Serializable {
+public class RedeemedProductDAO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -8644694357611138726L;
@@ -34,7 +34,7 @@ public class RedeemedProduct implements Serializable {
     private String idCountry;
 
     @Column(name = "number_redeemed")
-    private Long numberRedeemed;
+    private Integer numberRedeemed;
 
     @Builder.Default
     @Column(name = "update_date")

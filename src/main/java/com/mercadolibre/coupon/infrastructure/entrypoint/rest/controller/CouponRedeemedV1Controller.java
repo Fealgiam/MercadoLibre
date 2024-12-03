@@ -1,14 +1,18 @@
 package com.mercadolibre.coupon.infrastructure.entrypoint.rest.controller;
 
-import com.mercadolibre.coupon.application.inbound.CouponService;
+import com.mercadolibre.coupon.application.inbound.CouponInPort;
 import com.mercadolibre.coupon.crosscutting.utility.PropagationExceptionUtility;
 import com.mercadolibre.coupon.domain.model.Coupon;
-import com.mercadolibre.coupon.infrastructure.entrypoint.rest.MercadoLibreCouponRedeemedController;
+import com.mercadolibre.coupon.infrastructure.entrypoint.rest.CouponRedeemedController;
 import com.mercadolibre.coupon.infrastructure.mapper.CouponMapper;
-import com.mercadolibre.coupon.infrastructure.mapper.CouponV1RsMapper;
+import com.mercadolibre.coupon.infrastructure.mapper.CouponRsV1Mapper;
 import com.mercadolibre.coupon.infrastructure.model.entrypoint.DataResponse;
-import com.mercadolibre.coupon.infrastructure.model.entrypoint.coupon.v1.CouponV1Rq;
-import com.mercadolibre.coupon.infrastructure.model.entrypoint.coupon.v1.CouponV1Rs;
+import com.mercadolibre.coupon.infrastructure.model.entrypoint.coupon.v1.CouponRqV1;
+import com.mercadolibre.coupon.infrastructure.model.entrypoint.coupon.v1.CouponRsV1;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.github.resilience4j.retry.annotation.Retry;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -25,35 +29,32 @@ import static com.mercadolibre.coupon.crosscutting.constant.ResourceEndpoints.X_
 import static com.mercadolibre.coupon.crosscutting.utility.MessageUtility.getMessage;
 import static java.lang.String.format;
 
-/**
- * Class in charge of capturing requests related to coupons
- *
- * @author Alejandro Gil Amaya
- * @version v1
- */
 @Log4j2
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = COUPON_PATH, headers = {X_API_VERSION_V1})
-public class MercadoLibreCouponV1RedeemedController
-        implements MercadoLibreCouponRedeemedController<CouponV1Rq, CouponV1Rs> {
+@Tag(name = "CouponRedeemedV1Controller", description = "Controller to manage coupon redemption. Version #1")
+public class CouponRedeemedV1Controller implements CouponRedeemedController<CouponRqV1, CouponRsV1> {
 
-    private static final String CLASS_NAME = MercadoLibreCouponV1RedeemedController.class.getSimpleName();
+    private static final String CLASS_NAME = CouponRedeemedV1Controller.class.getSimpleName();
 
     // Mappers
     private final CouponMapper couponMapper;
-    private final CouponV1RsMapper couponV1RsMapper;
+    private final CouponRsV1Mapper couponRsV1Mapper;
 
     // Services
-    private final CouponService couponIterativeService;
+    private final CouponInPort couponService;
 
 
     @Override
+    @Retry(name = "couponRedeemed")
+    @RateLimiter(name = "couponRedeemed")
+    @CircuitBreaker(name = "couponRedeemed")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<DataResponse<CouponV1Rs>> calculateBestOfferCoupon(@Valid @RequestBody CouponV1Rq coupons) {
+    public ResponseEntity<DataResponse<CouponRsV1>> calculateBestOfferCoupon(@Valid @RequestBody final CouponRqV1 coupons) {
         try {
-            Coupon couponRedeemable = couponIterativeService.calculateBestOfferCoupon(couponMapper.mapper(coupons));
-            return this.buildResponse(couponV1RsMapper.mapper(couponRedeemable));
+            Coupon couponRedeemable = couponService.calculateBestOfferCoupon(couponMapper.mapper(coupons));
+            return this.buildResponse(couponRsV1Mapper.mapper(couponRedeemable));
         } catch (Exception ex) {
             log.error(format(getMessage(MSJ_GEN_FOR_SUM_ERROR), CLASS_NAME, "calculateBestOfferCoupon"));
             throw PropagationExceptionUtility.generateMercadoLibreException(ex);

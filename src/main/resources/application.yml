@@ -1,0 +1,134 @@
+# Server configurations
+server:
+  servlet:
+    context-path: /mercado-libre
+
+# Login configuration
+logging:
+  level:
+    root: INFO
+    org.springdoc: DEBUG
+    org.springframework.web: INFO
+    org.hibernate: INFO
+    com.mercadolibre.coupon: DEBUG
+
+# Actuator configuration
+management:
+  endpoints:
+    caches:
+      enabled: true
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+
+# Swagger configurations
+springdoc:
+  api-docs:
+    enabled: true
+    path: /swagger-api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+
+# Spring configurations
+spring:
+  application:
+    name: coupon
+  datasource:
+    url: jdbc:h2:mem:mercadoLibreTest
+    driverClassName: org.h2.Driver
+    username: mercadoLibre
+    password: mercadoLibrePassword123
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 25
+          order_inserts: true
+          order_updates: true
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/schema.sql
+
+# Application configuration
+application:
+  default-limit: 5
+  conversion-value: 100
+
+cron-task:
+  cache:
+    api-call-refresh: 0 */10 * * * ?
+
+# Services configurations
+services:
+  mercado-libre:
+    url: https://api.mercadolibre.com
+    paths:
+      fetch-product: /items/{id}
+      fetch-products: /items
+      fetch-country: /country/{id}
+      fetch-countries: /sites
+
+# Resilience configuration
+resilience4j:
+  circuitbreaker:
+    instances:
+      # Entry-point
+      couponRedeemed:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 4
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowType: COUNT_BASED
+        maxWaitDurationInHalfOpenState: 3m
+      couponProducts:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 4
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowType: COUNT_BASED
+        maxWaitDurationInHalfOpenState: 3m
+  ratelimiter:
+    instances:
+      # Entry-point
+      couponRedeemed:
+        limit-for-period: 120
+        limit-refresh-period: 1m
+        timeout-duration: 0
+      couponProducts:
+        limit-for-period: 120
+        limit-refresh-period: 1m
+        timeout-duration: 0
+  retry:
+    instances:
+      # Entry-point
+      couponRedeemed:
+        max-attempts: 3
+        wait-duration: 1s
+      couponProducts:
+        max-attempts: 3
+        wait-duration: 1s
+      # Output-point
+      feignCountryClient:
+        max-attempts: 3
+        wait-duration: 1s
+      feignProductClient:
+        max-attempts: 3
+        wait-duration: 1s
+      repositoryCouponClient:
+        max-attempts: 3
+        wait-duration: 1s

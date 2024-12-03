@@ -33,13 +33,15 @@ public class WebConfiguration implements WebMvcConfigurer, HandlerInterceptor {
                              final HttpServletResponse response,
                              final Object handler) {
 
-        if (Objects.isNull(request.getHeader(X_API_VERSION))) {
-            throw new MercadoLibreException(
-                    getMessage(MSJ_EX_CODE_TECHNICAL), getMessage(MSJ_RQ_VAL_HEADER_VERSION), HttpStatus.BAD_REQUEST);
-        }
+        if (!request.getServletPath().contains("swagger")) {
+            if (Objects.isNull(request.getHeader(X_API_VERSION))) {
+                throw new MercadoLibreException(
+                        getMessage(MSJ_EX_CODE_TECHNICAL), getMessage(MSJ_RQ_VAL_HEADER_VERSION), HttpStatus.BAD_REQUEST);
+            }
 
-        if (Objects.isNull(request.getHeader(HttpHeaders.ACCEPT_LANGUAGE))) {
-            log.warn(getMessage(MSJ_RQ_VAL_HEADER_LANGUAGE));
+            if (Objects.isNull(request.getHeader(HttpHeaders.ACCEPT_LANGUAGE))) {
+                log.warn(getMessage(MSJ_RQ_VAL_HEADER_LANGUAGE));
+            }
         }
 
         return true;

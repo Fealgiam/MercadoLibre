@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -72,13 +71,13 @@ public class ProductMapper {
                 .orElse(Product.builder().build());
     }
 
-    public Set<Product> mapperDao(final Set<RedeemedProductDAO> productDaos) {
+    public List<Product> mapperDao(final List<RedeemedProductDAO> productDaos) {
         return Optional
                 .ofNullable(productDaos)
-                .orElse(Set.of())
+                .orElse(List.of())
                 .stream()
                 .map(this::mapper)
-                .collect(Collectors.toSet());
+                .toList();
     }
 
 }

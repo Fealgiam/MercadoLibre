@@ -8,7 +8,6 @@ import com.mercadolibre.coupon.domain.context.MessageContextMercadoLibre;
 import com.mercadolibre.coupon.domain.model.Country;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
@@ -35,9 +34,6 @@ public class FetchProductsRedeemedByCountry
 
     private static final String CLASS_NAME = FetchProductsRedeemedByCountry.class.getSimpleName();
 
-    @Value("${application.default-limit}")
-    private Integer defaultLimit;
-
     // Services
     private final ProductRedeemedOutPort productRedeemedOutPort;
 
@@ -61,7 +57,7 @@ public class FetchProductsRedeemedByCountry
 
             // Fetch products redeemed by country
             var productsRedeemed = productRedeemedOutPort
-                    .fetchProductRedeemedByCountry(countrySearch.getCode(), limit.orElse(defaultLimit));
+                    .fetchProductRedeemedByCountry(countrySearch.getCode(), limit);
 
             // Add to context
             context.addItem(PRODUCTS_REDEEMED, productsRedeemed);

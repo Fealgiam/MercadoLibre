@@ -1,7 +1,6 @@
 package com.mercadolibre.coupon.application.inbound.mercadolibre.filter;
 
 import com.mercadolibre.coupon.application.inbound.mercadolibre.ProductFilter;
-import com.mercadolibre.coupon.crosscutting.exception.business.BusinessException;
 import com.mercadolibre.coupon.domain.model.Coupon;
 import com.mercadolibre.coupon.domain.model.Product;
 import org.springframework.stereotype.Component;
@@ -10,9 +9,6 @@ import reactor.core.publisher.Mono;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicReference;
-
-import static com.mercadolibre.coupon.crosscutting.constant.MessageKeys.MSJ_BUSINESS_COUPON_INAPPLICABLE;
-import static com.mercadolibre.coupon.crosscutting.utility.MessageUtility.getMessage;
 
 @Component
 public class NonProductsValidFilter implements ProductFilter<Coupon> {

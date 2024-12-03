@@ -6,9 +6,8 @@ import com.mercadolibre.coupon.infrastructure.model.entrypoint.coupon.v1.CouponR
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 @NoArgsConstructor
@@ -25,12 +24,12 @@ public class CouponRsV1Mapper {
     }
 
     // Private Methods
-    private Set<String> getIdProductsRedeemable(Coupon couponRedeemable) {
+    private List<String> getIdProductsRedeemable(Coupon couponRedeemable) {
         return couponRedeemable
                 .getProductsRedeemable()
                 .stream()
                 .map(Product::getId)
-                .collect(Collectors.toSet());
+                .toList();
     }
 
 }

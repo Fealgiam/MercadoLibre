@@ -6,6 +6,10 @@ import com.mercadolibre.coupon.infrastructure.entrypoint.rest.CouponProductsCont
 import com.mercadolibre.coupon.infrastructure.mapper.ProductRsV1Mapper;
 import com.mercadolibre.coupon.infrastructure.model.entrypoint.DataResponse;
 import com.mercadolibre.coupon.infrastructure.model.entrypoint.Product.v1.ProductRsV1;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.github.resilience4j.retry.annotation.Retry;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
@@ -31,6 +35,7 @@ import static java.lang.String.format;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = COUPON_PRODUCTS_PATH, headers = {X_API_VERSION_V1})
+@Tag(name = "CouponProductsV1Controller", description = "Controller to consult products redeemed for coupons. Version #1")
 public class CouponProductsV1Controller implements CouponProductsController<ProductRsV1> {
 
     private static final String CLASS_NAME = CouponProductsV1Controller.class.getSimpleName();
@@ -43,6 +48,9 @@ public class CouponProductsV1Controller implements CouponProductsController<Prod
 
 
     @Override
+    @Retry(name = "couponProducts")
+    @RateLimiter(name = "couponProducts")
+    @CircuitBreaker(name = "couponProducts")
     @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DataResponse<ProductRsV1>> fetchTopProductsRedeemedByCoupon(
             @RequestParam(value = NUMBER_RECORD_PARAM, required = false) final Optional<Integer> limit) {
@@ -56,6 +64,9 @@ public class CouponProductsV1Controller implements CouponProductsController<Prod
     }
 
     @Override
+    @Retry(name = "couponProducts")
+    @RateLimiter(name = "couponProducts")
+    @CircuitBreaker(name = "couponProducts")
     @GetMapping(
             value = COUPON_PRODUCTS_COUNTRY_PATH,
             consumes = MediaType.APPLICATION_JSON_VALUE,

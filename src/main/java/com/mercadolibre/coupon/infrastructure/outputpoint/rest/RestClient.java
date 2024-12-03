@@ -20,9 +20,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 import static com.mercadolibre.coupon.crosscutting.constant.Constants.CACHE_CALL_APIS;
 import static com.mercadolibre.coupon.crosscutting.constant.Constants.NAME_CACHE_CALL_API_COUNTRIES;
@@ -76,7 +76,7 @@ public class RestClient implements CountryOutPort, ProductOutPort {
     @Override
     @Retry(name = "feignCountryClient")
     @Cacheable(value = NAME_CACHE_CALL_API_COUNTRIES, cacheManager = "mercadoLibreCacheManager")
-    public Set<Country> fetchCountries() {
+    public List<Country> fetchCountries() {
         try {
             final var countryRs = mercadoLibreFeignClient.getSites();
             return countryMapper.mapper(countryRs);
@@ -100,7 +100,7 @@ public class RestClient implements CountryOutPort, ProductOutPort {
 
     @Override
     @Retry(name = "feignProductClient")
-    public Collection<Product> fetchProducts(final Collection<String> productIds) {
+    public List<Product> fetchProducts(final Collection<String> productIds) {
         try {
             // TODO - Implement call services to get multiple products. - The service requires authentication.
             //final var ids = String.join(",", productIds);

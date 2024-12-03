@@ -7,8 +7,8 @@ import com.mercadolibre.coupon.application.inbound.mercadolibre.step.SaveCouponP
 import com.mercadolibre.coupon.application.inbound.mercadolibre.step.SelectBestOfferCoupon;
 import com.mercadolibre.coupon.crosscutting.utility.PropagationExceptionUtility;
 import com.mercadolibre.coupon.domain.context.MessageContext;
-import com.mercadolibre.coupon.domain.context.MessageContextMercadoLibre;
 import com.mercadolibre.coupon.domain.context.MessageContextEnum;
+import com.mercadolibre.coupon.domain.context.MessageContextMercadoLibre;
 import com.mercadolibre.coupon.domain.model.Coupon;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

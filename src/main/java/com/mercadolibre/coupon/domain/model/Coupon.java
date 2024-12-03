@@ -34,6 +34,7 @@ public class Coupon {
     private Double amountRedeemable = Double.valueOf(0);
 
     @Getter
+    @Builder.Default
     private Integer amountConversion = Integer.valueOf(1);
 
     @Getter

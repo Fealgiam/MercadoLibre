@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Builder
@@ -29,6 +29,6 @@ public class CouponRsV1 extends CouponRqRs implements Serializable {
     private Double total;
 
     @JsonProperty("item_ids")
-    private Set<String> items;
+    private List<String> items;
 
 }

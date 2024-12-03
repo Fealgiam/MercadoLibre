@@ -5,16 +5,16 @@ import com.mercadolibre.coupon.infrastructure.model.entrypoint.Product.v1.Produc
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
 @NoArgsConstructor
 public class ProductRsV1Mapper {
 
-    public ProductRsV1 mapper(Set<Product> products) {
+    public ProductRsV1 mapper(Collection<Product> products) {
         return Optional
                 .ofNullable(products)
                 .map(productRedeemed -> ProductRsV1
@@ -25,8 +25,10 @@ public class ProductRsV1Mapper {
     }
 
     // Private Methods
-    private Map<String, Integer> getMapFromSetProducts(Set<Product> products) {
-        return products.stream().collect(Collectors.toMap(Product::getId, Product::getTimesRedeemed));
+    private Map<String, Integer> getMapFromSetProducts(Collection<Product> products) {
+        return products
+                .stream()
+                .collect(Collectors.toMap(Product::getId, Product::getTimesRedeemed));
     }
 
 }

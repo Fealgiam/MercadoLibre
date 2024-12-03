@@ -13,9 +13,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 import static com.mercadolibre.coupon.crosscutting.constant.MessageKeys.MSJ_GEN_FOR_SUM_ERROR;
 import static com.mercadolibre.coupon.crosscutting.utility.MessageUtility.getMessage;
@@ -53,11 +53,17 @@ public class ProductService implements ProductInPort {
     // Custom Methods
     @Override
     @SuppressWarnings("unchecked")
-    public Set<Product> fetchRedeemedProducts(Optional<Integer> limit) {
+    public List<Product> fetchRedeemedProducts(Optional<Integer> limit) {
         try {
-            return fetchProductsRedeemed
-                    .apply(this.initialPipelineData(limit))
-                    .getItem(PRODUCTS_REDEEMED, Set.class);
+            var contextFetchRedeemedProducts = this.initialPipelineData(limit);
+
+            var productsRedeemed = fetchProductsRedeemed
+                    .apply(contextFetchRedeemedProducts)
+                    .getItem(PRODUCTS_REDEEMED, List.class);
+
+            contextFetchRedeemedProducts.clean();
+
+            return productsRedeemed;
         } catch (Exception ex) {
             log.error(format(getMessage(MSJ_GEN_FOR_SUM_ERROR), CLASS_NAME, "fetchRedeemedProducts"));
             throw PropagationExceptionUtility.generateMercadoLibreException(ex);
@@ -66,12 +72,18 @@ public class ProductService implements ProductInPort {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Set<Product> fetchRedeemedProductsByCountry(String country, Optional<Integer> limit) {
+    public List<Product> fetchRedeemedProductsByCountry(String country, Optional<Integer> limit) {
         try {
-            return fetchCountries
+            var contextFetchRedeemedProductsByCountry = this.initialPipelineData(limit, country);
+
+            var productsRedeemed = fetchCountries
                     .andThen(fetchProductsRedeemedByCountry)
-                    .apply(this.initialPipelineData(limit, country))
-                    .getItem(PRODUCTS_REDEEMED, Set.class);
+                    .apply(contextFetchRedeemedProductsByCountry)
+                    .getItem(PRODUCTS_REDEEMED, List.class);
+
+            contextFetchRedeemedProductsByCountry.clean();
+
+            return productsRedeemed;
         } catch (Exception ex) {
             log.error(format(getMessage(MSJ_GEN_FOR_SUM_ERROR), CLASS_NAME, "fetchRedeemedProductsByCountry"));
             throw PropagationExceptionUtility.generateMercadoLibreException(ex);

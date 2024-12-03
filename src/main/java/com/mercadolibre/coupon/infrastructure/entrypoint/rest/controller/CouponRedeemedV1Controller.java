@@ -12,6 +12,7 @@ import com.mercadolibre.coupon.infrastructure.model.entrypoint.coupon.v1.CouponR
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -32,6 +33,7 @@ import static java.lang.String.format;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = COUPON_PATH, headers = {X_API_VERSION_V1})
+@Tag(name = "CouponRedeemedV1Controller", description = "Controller to manage coupon redemption. Version #1")
 public class CouponRedeemedV1Controller implements CouponRedeemedController<CouponRqV1, CouponRsV1> {
 
     private static final String CLASS_NAME = CouponRedeemedV1Controller.class.getSimpleName();

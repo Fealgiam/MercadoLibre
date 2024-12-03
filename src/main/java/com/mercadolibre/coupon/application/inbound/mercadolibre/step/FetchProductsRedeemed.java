@@ -6,7 +6,6 @@ import com.mercadolibre.coupon.domain.context.MessageContext;
 import com.mercadolibre.coupon.domain.context.MessageContextMercadoLibre;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -25,9 +24,6 @@ public class FetchProductsRedeemed implements UnaryOperator<MessageContext<Messa
 
     private static final String CLASS_NAME = FetchProductsRedeemed.class.getSimpleName();
 
-    @Value("${application.default-limit}")
-    private Integer defaultLimit;
-
     // Services
     private final ProductRedeemedOutPort productRedeemedOutPort;
 
@@ -41,7 +37,7 @@ public class FetchProductsRedeemed implements UnaryOperator<MessageContext<Messa
             final Optional<Integer> limit = context.getItem(LIMIT, Optional.class);
 
             // Fetch products redeemed by country
-            var productsRedeemed = productRedeemedOutPort.fetchProductRedeemed(limit.orElse(defaultLimit));
+            var productsRedeemed = productRedeemedOutPort.fetchProductRedeemed(limit);
 
             // Add to context
             context.addItem(PRODUCTS_REDEEMED, productsRedeemed);

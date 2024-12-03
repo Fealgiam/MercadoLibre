@@ -2,6 +2,7 @@ package com.mercadolibre.coupon.infrastructure.model.entrypoint;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,8 +24,10 @@ public class DataResponse<T> implements Serializable {
 
     private T data;
 
+    @JsonProperty("page_response")
     private PageResponse pageResponse;
 
+    @JsonProperty("error_response")
     private ErrorResponse errorResponse;
 
 }

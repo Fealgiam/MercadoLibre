@@ -21,6 +21,7 @@ public class OnlyTwoProductsFilter implements ProductFilter<Coupon> {
             final var productsToRedeem = coupon.getProductsRedeemable().stream().toList();
             final var productMaxPrice = productsToRedeem.get(productsToRedeem.size() - 1);
 
+            coupon.setApplyFilter(Boolean.FALSE);
             coupon.setProductsRedeemable(List.of(productMaxPrice));
             coupon.setAmountRedeemable(productMaxPrice.getPrice());
         }

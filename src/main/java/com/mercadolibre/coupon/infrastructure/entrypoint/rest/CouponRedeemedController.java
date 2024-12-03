@@ -2,7 +2,6 @@ package com.mercadolibre.coupon.infrastructure.entrypoint.rest;
 
 import com.mercadolibre.coupon.infrastructure.model.entrypoint.DataResponse;
 import com.mercadolibre.coupon.infrastructure.model.entrypoint.coupon.CouponRqRs;
-import com.mercadolibre.coupon.infrastructure.model.entrypoint.coupon.v1.CouponRqV1;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

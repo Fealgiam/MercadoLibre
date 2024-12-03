@@ -1,0 +1,25 @@
+# Spring configurations
+spring:
+  devtools:
+    add-properties: false
+  datasource:
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    driverClassName: com.mysql.cj.jdbc.Driver
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        jdbc:
+          batch_size: 25
+          order_inserts: true
+          order_updates: true
+
+# Services configurations
+services:
+  mercado-libre:
+    url: https://api.mercadolibre.com

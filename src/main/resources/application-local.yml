@@ -1,0 +1,29 @@
+# Spring configurations
+spring:
+  datasource:
+    url: jdbc:h2:mem:mercadoLibreTest
+    driverClassName: org.h2.Driver
+    username: mercadoLibre
+    password: mercadoLibrePassword123
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 25
+          order_inserts: true
+          order_updates: true
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/schema.sql
+
+# Services configurations
+services:
+  mercado-libre:
+    url: https://api.mercadolibre.com

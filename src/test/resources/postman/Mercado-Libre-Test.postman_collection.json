@@ -117,7 +117,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n   \"amount\":  1200000.00,\r\n   \"item_ids\": [\"MCO1480838649\",\"MCO1493507143\",\"MCO2669173224\",\"MCO1466867097\",\"MCO1419597389\"] \r\n}",
+							"raw": "{\r\n   \"amount\":  200000.00,\r\n   \"item_ids\": [\"MCO1480838649\",\"MCO1493507143\",\"MCO2669173224\",\"MCO1466867097\",\"MCO1419597389\"] \r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -125,9 +125,9 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/mercado-libre/coupon",
+							"raw": "{{url_cupon}}/mercado-libre/coupon",
 							"host": [
-								"{{url}}"
+								"{{url_cupon}}"
 							],
 							"path": [
 								"mercado-libre",
@@ -176,12 +176,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/mercado-libre/coupon/products?number_record_param=5",
-							"protocol": "http",
+							"raw": "{{url_cupon}}/mercado-libre/coupon/products?number_record_param=5",
 							"host": [
-								"localhost"
+								"{{url_cupon}}"
 							],
-							"port": "8080",
 							"path": [
 								"mercado-libre",
 								"coupon",
@@ -236,12 +234,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/mercado-libre/coupon/products/:country_code?number_record_param=2",
-							"protocol": "http",
+							"raw": "{{url_cupon}}/mercado-libre/coupon/products/:country_code?number_record_param=2",
 							"host": [
-								"localhost"
+								"{{url_cupon}}"
 							],
-							"port": "8080",
 							"path": [
 								"mercado-libre",
 								"coupon",

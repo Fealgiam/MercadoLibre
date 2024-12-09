@@ -71,18 +71,18 @@ Para poder instalar y ejecutar correctamente este proyecto se debe contar con:
 - Para ver el **reporte** de las pruebas unitarias dirigirse a la ruta *${root-project}/reports/jacoco* y abrir el archivo **index.html**
 - Para **ejecutar** el proyecto digite el siguiente comando *‘.\gradlew.bat bootrun ’*
 - Para ver **documentación** del API digite en su navegador la siguiente ruta
-    - **Local-UI**:*‘http://localhost:8080/mercadolibre/mercado-libre/swagger-ui/index.html’*
-    - **Railway-UI**: *‘https://lucky-luck-production-651a.up.railway.app/mercado-libre/swagger-ui/index.html’*
-    - **Local-Docs**:*‘http://localhost:8080/mercadolibre/mercado-libre/swagger-api-docs’*
-    - **Railway-Docs**: *‘https://lucky-luck-production-651a.up.railway.app/mercado-libre/swagger-api-docs’*
+    - **Local-UI**:*http://localhost:8080/mercadolibre/mercado-libre/swagger-ui/index.html*
+    - **Railway-UI**: *https://lucky-luck-production-651a.up.railway.app/mercado-libre/swagger-ui/index.html*
+    - **Local-Docs**:*http://localhost:8080/mercadolibre/mercado-libre/swagger-api-docs*
+    - **Railway-Docs**: *https://lucky-luck-production-651a.up.railway.app/mercado-libre/swagger-api-docs*
 - Ruta para verificar micro-servicio:
     - **Local**: *http://localhost:8080/mercado-libre/actuator/health*
-    - **Railway**: *‘https://lucky-luck-production-651a.up.railway.app/mercado-libre/actuator/health’*
+    - **Railway**: *https://lucky-luck-production-651a.up.railway.app/mercado-libre/actuator/health*
 - Ruta para verificar estado de las caches implementadas:
   - **Local**: *http://localhost:8080/mercado-libre/actuator/caches*
-  - **Railway**: *‘https://lucky-luck-production-651a.up.railway.app/mercado-libre/actuator/caches’*
+  - **Railway**: *https://lucky-luck-production-651a.up.railway.app/mercado-libre/actuator/caches*
 - Ruta para verificar estado de circuitbreaker:
   - **Local**: *http://localhost:8080/mercado-libre/actuator/circuitbreaker*
-  - **Railway**: *‘https://lucky-luck-production-651a.up.railway.app/mercado-libre/actuator/circuitbreaker’*
+  - **Railway**: *https://lucky-luck-production-651a.up.railway.app/mercado-libre/actuator/circuitbreaker*
 - Ruta acceder a la consola H2 Data base:
   - **Local**: *http://localhost:8080/mercado-libre/h2-console*
